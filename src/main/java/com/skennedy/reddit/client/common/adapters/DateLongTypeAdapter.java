@@ -20,6 +20,6 @@ public class DateLongTypeAdapter extends TypeAdapter<Date> {
 
     @Override
     public Date read(JsonReader in) throws IOException {
-        return new Date(in.nextLong() * 1000L); //this seems flimsy as all heck
+        return new Date(in.nextLong() * 1000L); //Reddit dates are in unix seconds
     }
 }
