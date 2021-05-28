@@ -1,17 +1,17 @@
 reddit-client
 ==
 
-##What is reddit-client?
+## What is reddit-client?
 
 reddit-client is a WIP fluent API styled Java client for the Reddit API. It's intended to make using the Reddit API in your Java program as easy and readable as possible.
 
 ##How to use it?
 
-###Conventions
+### Conventions
 
 reddit-client is designed to be consistent and easy to use. There are a few conventions used throughout to keep in mind.
 
-####The Reddit interface:
+#### The Reddit interface:
 
 The `Reddit` interface is your way in to the Reddit API. 
 
@@ -53,7 +53,7 @@ try (Reddit reddit = new RedditWebApp(access, clientId, clientSecret)) {
 
 NB: Due to a bug on reddit's side this call will not return anything for the time being
 
-####Requests/Responses:
+#### Requests/Responses:
 
 All requests will return a `Response<Data>` object where `Data` is the data class expected (e.g. `Submission`). Requests that return a Reddit `Listing` will return a `PagedResponse<data>` that has utilities for paging through the response.
 
@@ -61,11 +61,11 @@ All Responses have a `data` field and an `error` field. If there is an error wit
 
 All Responses have a `hasData()` and `hasError()` method to check the status of the response.
 
-###Setting up an application
+### Setting up an application
 
 Coming soon!
 
-###Examples
+### Examples
 
 Getting an access for a webapp:
 
