@@ -1,6 +1,9 @@
 package com.skennedy.reddit.client.authorization.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.skennedy.reddit.client.common.model.Scope;
+
+import java.util.List;
 
 public class Access {
 
@@ -10,15 +13,16 @@ public class Access {
     private String tokenType;
     @SerializedName("expires_in")
     private long expiresIn;
-    private String scope;
+    @SerializedName("scope")
+    private List<Scope> scopes;
     @SerializedName("refresh_token")
     private String refreshToken;
 
-    public Access(String accessToken, String tokenType, long expiresIn, String scope, String refreshToken) {
+    public Access(String accessToken, String tokenType, long expiresIn, List<Scope> scopes, String refreshToken) {
         this.accessToken = accessToken;
         this.tokenType = tokenType;
         this.expiresIn = expiresIn;
-        this.scope = scope;
+        this.scopes = scopes;
         this.refreshToken = refreshToken;
     }
 
@@ -46,12 +50,12 @@ public class Access {
         this.expiresIn = expiresIn;
     }
 
-    public String getScope() {
-        return scope;
+    public List<Scope> getScopes() {
+        return scopes;
     }
 
-    public void setScope(String scope) {
-        this.scope = scope;
+    public void setScopes(List<Scope> scopes) {
+        this.scopes = scopes;
     }
 
     public String getRefreshToken() {

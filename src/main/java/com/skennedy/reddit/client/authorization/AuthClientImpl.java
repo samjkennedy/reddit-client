@@ -1,7 +1,10 @@
 package com.skennedy.reddit.client.authorization;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.skennedy.reddit.client.authorization.model.Access;
+import com.skennedy.reddit.client.common.adapters.ScopeListTypeAdapter;
+import com.skennedy.reddit.client.common.model.Scope;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
 import com.skennedy.reddit.client.common.util.RequestUtils;
@@ -133,9 +136,13 @@ class AuthClientImpl implements AuthClient {
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
                 String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
                 if (response.getStatusLine().getStatusCode() != 200) {
-                    return Response.error(new Fail<>(RequestUtils.parseError(response))); //TODO: Define errors
+                    return Response.error(new Fail<>(RequestUtils.parseError(response)));
                 }
-                return Response.success(new GsonBuilder().create().fromJson(content, Access.class));
+                return Response.success(new GsonBuilder()
+                        //Christ
+                        .registerTypeAdapter(new TypeToken<List<Scope>>(){}.getType(), new ScopeListTypeAdapter())
+                        .create()
+                        .fromJson(content, Access.class));
             }
         }
     }

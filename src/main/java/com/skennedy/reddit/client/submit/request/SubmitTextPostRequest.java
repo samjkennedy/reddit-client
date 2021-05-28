@@ -1,6 +1,7 @@
 package com.skennedy.reddit.client.submit.request;
 
 import com.google.gson.GsonBuilder;
+import com.skennedy.reddit.client.authorization.model.Access;
 import com.skennedy.reddit.client.submit.model.SubmitKind;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
@@ -17,12 +18,12 @@ public class SubmitTextPostRequest extends SubmitRequest<SubmitTextPostRequest> 
     String text;
     String richText;
 
-    public SubmitTextPostRequest(String token, CloseableHttpClient httpClient) {
-        this(token, httpClient, null);
+    public SubmitTextPostRequest(Access access, CloseableHttpClient httpClient) throws IllegalAccessException {
+        this(access, httpClient, null);
     }
 
-    public SubmitTextPostRequest(String token, CloseableHttpClient httpClient, String text) {
-        super(token, httpClient);
+    public SubmitTextPostRequest(Access access, CloseableHttpClient httpClient, String text) throws IllegalAccessException {
+        super(access, httpClient);
 
         if (StringUtils.length(text) > 2000) {
             throw new IllegalArgumentException("Text must be less than or equal to 2000 characters");

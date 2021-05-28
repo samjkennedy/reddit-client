@@ -1,6 +1,5 @@
 package com.skennedy.reddit.client.submit;
 
-import com.skennedy.reddit.client.Reddit;
 import com.skennedy.reddit.client.RedditWebApp;
 import com.skennedy.reddit.client.common.AuthedIntegrationTest;
 import com.skennedy.reddit.client.common.response.Page;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import static com.skennedy.reddit.client.search.model.SubSort.NEW;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SubmissionClientIntegrationTest extends AuthedIntegrationTest {
@@ -120,7 +118,7 @@ class SubmissionClientIntegrationTest extends AuthedIntegrationTest {
             Submission submission = submissions.iterator().next();
 
             Response<Void> voteResponse= reddit.submit()
-                    .vote(Vote.DOWNVOTE)
+                    .vote(Vote.UPVOTE)
                     .onSubmission(submission)
                     .submit();
 

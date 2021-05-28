@@ -1,5 +1,7 @@
 package com.skennedy.reddit.client.search.request;
 
+import com.skennedy.reddit.client.authorization.model.Access;
+import com.skennedy.reddit.client.common.model.Scope;
 import com.skennedy.reddit.client.common.request.ListingRequest;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Page;
@@ -33,8 +35,8 @@ public class SubmissionRequest extends ListingRequest<SubmissionRequest, Submiss
     private String sort;
     private String time;
 
-    public SubmissionRequest(CloseableHttpClient httpClient, String token, String subreddit) {
-        super(token, httpClient);
+    public SubmissionRequest(Access access, CloseableHttpClient httpClient, String subreddit) throws IllegalAccessException {
+        super(access, httpClient, Scope.READ);
 
         if (StringUtils.isBlank(subreddit)) {
             throw new IllegalArgumentException("Subreddit name must not be blank");
@@ -50,8 +52,8 @@ public class SubmissionRequest extends ListingRequest<SubmissionRequest, Submiss
      * Begins a flow for getting a page of rising submissions from a subreddit
      * @return A RisingRequest instance
      */
-    public RisingRequest rising() {
-        return new RisingRequest(token, httpClient, subreddit);
+    public RisingRequest rising() throws IllegalAccessException {
+        return new RisingRequest(access, httpClient, subreddit);
     }
 
     /**
@@ -106,7 +108,7 @@ public class SubmissionRequest extends ListingRequest<SubmissionRequest, Submiss
         HttpGet get = new HttpGet(uri);
         get.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
 
-        get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + token);
+        get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
 
         try (CloseableHttpResponse response = httpClient.execute(get)) {
             String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);

@@ -1,6 +1,8 @@
-package com.skennedy.reddit.client.subreddit.request;
+package com.skennedy.reddit.client.best.request;
+
 
 import com.skennedy.reddit.client.authorization.model.Access;
+import com.skennedy.reddit.client.common.model.Scope;
 import com.skennedy.reddit.client.common.request.ListingRequest;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Page;
@@ -24,22 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class RisingRequest extends ListingRequest<RisingRequest, Submission> {
+public class BestRequest extends ListingRequest<BestRequest, Submission> {
 
-    private final String subreddit;
-
-    public RisingRequest(Access access, CloseableHttpClient httpClient, String subreddit) throws IllegalAccessException {
-        super(access, httpClient);
-
-        if (StringUtils.isBlank(subreddit)) {
-            throw new IllegalArgumentException("Subreddit must not be blank");
-        }
-
-        this.subreddit = subreddit;
-        this.limit = 25;
+    public BestRequest(Access access, CloseableHttpClient httpClient) throws IllegalAccessException {
+        super(access, httpClient, Scope.READ);
     }
 
-    @Override
     public PagedResponse<Submission> execute() throws Exception {
         if (StringUtils.isNoneBlank(afterName, beforeName)) {
             throw new IllegalArgumentException("Only one of before or after can be set, not both");
@@ -55,7 +47,7 @@ public class RisingRequest extends ListingRequest<RisingRequest, Submission> {
             params.add(new BasicNameValuePair("before", beforeName));
         }
 
-        String uri = new URIBuilder("https://oauth.reddit.com/r/" + subreddit + "/rising")
+        String uri = new URIBuilder("https://oauth.reddit.com/best")
                 .addParameters(params)
                 .toString();
 

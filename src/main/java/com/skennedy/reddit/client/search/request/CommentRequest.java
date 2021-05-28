@@ -3,7 +3,9 @@ package com.skennedy.reddit.client.search.request;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.skennedy.reddit.client.authorization.model.Access;
 import com.skennedy.reddit.client.common.error.CommonErrorCode;
+import com.skennedy.reddit.client.common.model.Scope;
 import com.skennedy.reddit.client.common.request.ListingRequest;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Page;
@@ -39,8 +41,8 @@ public class CommentRequest extends ListingRequest<CommentRequest, Comment> {
     private String sort;
     private Integer depth;
 
-    public CommentRequest(CloseableHttpClient httpClient, String token, String subreddit, String article) {
-        super(token, httpClient);
+    public CommentRequest(Access access, CloseableHttpClient httpClient, String subreddit, String article) throws IllegalAccessException {
+        super(access, httpClient, Scope.ANY);
 
         this.subreddit = subreddit;
         this.article = article;
@@ -95,7 +97,7 @@ public class CommentRequest extends ListingRequest<CommentRequest, Comment> {
         HttpGet get = new HttpGet(uri);
         get.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
 
-        get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + token);
+        get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
 
         try (CloseableHttpResponse response = httpClient.execute(get)) {
             String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);

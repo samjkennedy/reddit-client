@@ -1,7 +1,7 @@
 package com.skennedy.reddit.client;
 
 import com.skennedy.reddit.client.account.AccountClient;
-import com.skennedy.reddit.client.best.BestClientImpl;
+import com.skennedy.reddit.client.best.request.BestRequest;
 import com.skennedy.reddit.client.search.SearchClient;
 import com.skennedy.reddit.client.submit.SubmissionClient;
 import com.skennedy.reddit.client.subreddit.SubredditClient;
@@ -43,5 +43,5 @@ public interface Reddit extends AutoCloseable {
      * Creates a request to get the front page
      * @return A BestRequest instance
      */
-    BestClientImpl.BestRequest best();
+    BestRequest best() throws IllegalAccessException;
 }

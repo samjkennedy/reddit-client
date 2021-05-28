@@ -1,5 +1,7 @@
 package com.skennedy.reddit.client.submit.request;
 
+import com.skennedy.reddit.client.authorization.model.Access;
+import com.skennedy.reddit.client.common.model.Scope;
 import com.skennedy.reddit.client.common.request.Request;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
@@ -23,8 +25,8 @@ public class SubmitCommentRequest extends Request {
     String text;
     String parent;
 
-    public SubmitCommentRequest(String token, CloseableHttpClient httpClient, String text) {
-        super(token, httpClient);
+    public SubmitCommentRequest(Access access, CloseableHttpClient httpClient, String text) throws IllegalAccessException {
+        super(access, httpClient, Scope.ANY);
         if (StringUtils.isBlank(text)) {
             throw new IllegalArgumentException("Text must not be blank");
         }
@@ -54,7 +56,7 @@ public class SubmitCommentRequest extends Request {
         HttpPost post = new HttpPost("https://oauth.reddit.com/api/comment");
         post.setEntity(new UrlEncodedFormEntity(params));
         post.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
-        post.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + token);
+        post.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
 
         try (CloseableHttpResponse response = httpClient.execute(post)) {
             if (response.getStatusLine().getStatusCode() != 200) {

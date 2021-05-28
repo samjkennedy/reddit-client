@@ -1,5 +1,6 @@
 package com.skennedy.reddit.client.submit.request;
 
+import com.skennedy.reddit.client.authorization.model.Access;
 import com.skennedy.reddit.client.submit.model.SubmitKind;
 import org.apache.http.NameValuePair;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -14,8 +15,8 @@ public class SubmitImageRequest extends SubmitRequest<SubmitImageRequest> {
     private URL url;
 
     //TODO: This is identical to post link just with a different KIND, merge somehow
-    public SubmitImageRequest(String token, CloseableHttpClient httpClient, URL url) {
-        super(token, httpClient);
+    public SubmitImageRequest(Access access, CloseableHttpClient httpClient, URL url) throws IllegalAccessException {
+        super(access, httpClient);
         if (url == null) {
             throw new IllegalArgumentException("URL cannot be null");
         }

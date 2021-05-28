@@ -3,6 +3,7 @@ package com.skennedy.reddit.client.search.request;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.skennedy.reddit.client.authorization.model.Access;
 import com.skennedy.reddit.client.common.request.Request;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
@@ -29,8 +30,8 @@ public class SubredditSearchRequest extends Request {
     private boolean includeUnadvertisable;
     private boolean exact;
 
-    public SubredditSearchRequest(CloseableHttpClient httpClient, String token, String query) {
-        super(token, httpClient);
+    public SubredditSearchRequest(Access access, CloseableHttpClient httpClient, String query) throws IllegalAccessException {
+        super(access, httpClient);
 
         this.query = query;
     }
@@ -80,7 +81,7 @@ public class SubredditSearchRequest extends Request {
         HttpPost post = new HttpPost("https://oauth.reddit.com/api/search_subreddits");
         post.setEntity(new UrlEncodedFormEntity(params));
         post.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
-        post.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + token);
+        post.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
 
         try (CloseableHttpResponse response = httpClient.execute(post)) {
             String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);

@@ -13,7 +13,7 @@ public interface SearchClient {
      * @param subreddit The non-prefixed name of the subreddit, i.e. "java", not "r/java"
      * @return a SubmissionRequest instance over the given subreddit
      */
-    SubmissionRequest r(String subreddit);
+    SubmissionRequest r(String subreddit) throws IllegalAccessException;
 
     /**
      * Begins a flow for searching for subreddits with a given search.
@@ -21,7 +21,7 @@ public interface SearchClient {
      * @param search The search string
      * @return a SubredditSearchRequest instance over the given search query
      */
-    SubredditSearchRequest subreddits(String search);
+    SubredditSearchRequest subreddits(String search) throws IllegalAccessException;
 
 
     /**
@@ -30,7 +30,7 @@ public interface SearchClient {
      * @param submission The submission to search for comments on
      * @return a CommentRequest over the given submission
      */
-    CommentRequest comments(Submission submission);
+    CommentRequest comments(Submission submission) throws IllegalAccessException;
 
     /**
      * Begins a flow for searching for comments on a given article and subreddit.
@@ -40,5 +40,5 @@ public interface SearchClient {
      * @return a CommentRequest instance over the given article in the given subreddit
      * @see Submission#getId() to get the article id
      */
-    CommentRequest comments(String subreddit, String article);
+    CommentRequest comments(String subreddit, String article) throws IllegalAccessException;
 }
