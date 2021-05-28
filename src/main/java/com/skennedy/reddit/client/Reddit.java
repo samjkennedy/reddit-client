@@ -37,7 +37,7 @@ public interface Reddit extends AutoCloseable {
      * Begins a flow for accessing details of a subreddit such as rules and the sidebar
      * @return A SubredditClient instance
      */
-    SubredditClient subreddit();
+    SubredditClient subreddits();
 
     /**
      * Creates a request to get the front page

@@ -5,7 +5,6 @@ import com.skennedy.reddit.client.account.AccountClientFactory;
 import com.skennedy.reddit.client.authorization.model.Access;
 import com.skennedy.reddit.client.best.BestClient;
 import com.skennedy.reddit.client.best.BestClientFactory;
-import com.skennedy.reddit.client.best.BestClientImpl;
 import com.skennedy.reddit.client.best.request.BestRequest;
 import com.skennedy.reddit.client.search.SearchClient;
 import com.skennedy.reddit.client.search.SearchClientFactory;
@@ -56,7 +55,7 @@ public abstract class AbstractReddit implements Reddit {
     }
 
     @Override
-    public SubredditClient subreddit() {
+    public SubredditClient subreddits() {
         if (subredditClient == null) {
             subredditClient = SubredditClientFactory.getClient(access, httpClient);
         }
