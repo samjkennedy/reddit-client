@@ -1,5 +1,7 @@
 package com.skennedy.reddit.client.common.request;
 
+import com.skennedy.reddit.client.authorization.model.Access;
+import com.skennedy.reddit.client.common.model.Scope;
 import com.skennedy.reddit.client.common.response.PagedResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 
@@ -15,8 +17,8 @@ public abstract class ListingRequest<T extends ListingRequest<T, D>, D> extends 
     protected String beforeName;
     protected String afterName;
 
-    public ListingRequest(String token, CloseableHttpClient httpClient) {
-        super(token, httpClient);
+    public ListingRequest(Access access, CloseableHttpClient httpClient, Scope... scopes) throws IllegalAccessException {
+        super(access, httpClient, scopes);
     }
 
     /**

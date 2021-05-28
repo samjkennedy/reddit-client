@@ -1,5 +1,7 @@
 package com.skennedy.reddit.client.best;
 
+import com.skennedy.reddit.client.best.request.BestRequest;
+
 public interface BestClient {
-    BestClientImpl.BestRequest best();
+    BestRequest best() throws IllegalAccessException;
 }

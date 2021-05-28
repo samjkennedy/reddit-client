@@ -6,6 +6,7 @@ import com.skennedy.reddit.client.account.model.Account;
 import com.skennedy.reddit.client.account.model.KarmaListing;
 import com.skennedy.reddit.client.account.model.KarmaThing;
 import com.skennedy.reddit.client.account.model.SubredditKarma;
+import com.skennedy.reddit.client.authorization.model.Access;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
 import com.skennedy.reddit.client.common.util.RequestUtils;
@@ -24,12 +25,12 @@ public class AccountClientImpl implements AccountClient {
     private static final String ME = RequestUtils.DOMAIN + "/me";
     private static final String KARMA = RequestUtils.DOMAIN + "/me/karma";
 
-    private final String token;
+    private final Access access;
     private final CloseableHttpClient httpClient;
     private final Gson gson;
 
-    public AccountClientImpl(String token, CloseableHttpClient httpClient) {
-        this.token = token;
+    public AccountClientImpl(Access access, CloseableHttpClient httpClient) {
+        this.access = access;
         this.httpClient = httpClient;
         gson = new GsonBuilder().create();
     }
@@ -40,7 +41,7 @@ public class AccountClientImpl implements AccountClient {
         HttpGet get = new HttpGet(ME);
         get.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
 
-        get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + token);
+        get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
 
         try (CloseableHttpResponse response = httpClient.execute(get)) {
             String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
@@ -57,7 +58,7 @@ public class AccountClientImpl implements AccountClient {
         HttpGet get = new HttpGet(KARMA);
         get.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
 
-        get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + token);
+        get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
 
         try (CloseableHttpResponse response = httpClient.execute(get)) {
             String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);

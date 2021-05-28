@@ -3,6 +3,7 @@ package com.skennedy.reddit.client.best;
 import com.skennedy.reddit.client.RedditWebApp;
 import com.skennedy.reddit.client.common.AuthedIntegrationTest;
 import com.skennedy.reddit.client.common.response.Page;
+import com.skennedy.reddit.client.common.response.PagedResponse;
 import com.skennedy.reddit.client.common.response.Response;
 import com.skennedy.reddit.client.search.model.Submission;
 import org.junit.jupiter.api.Test;
@@ -16,9 +17,9 @@ class BestClientIntegrationTest extends AuthedIntegrationTest {
     @Test
     void best_returns100Best_givenLimit() throws Exception {
         try (RedditWebApp reddit = getClient()) {
-            Response<Page<Submission>> bestResponse = reddit.best()
+            PagedResponse<Submission> bestResponse = reddit.best()
                     .limit(100)
-                    .search();
+                    .execute();
 
             assertTrue(bestResponse.hasData());
             assertFalse(bestResponse.hasError());
@@ -33,8 +34,8 @@ class BestClientIntegrationTest extends AuthedIntegrationTest {
     @Test
     void best_returns25submissions_givenNoLimit() throws Exception {
         try (RedditWebApp reddit = getClient()) {
-            Response<Page<Submission>> bestResponse = reddit.best()
-                    .search();
+            PagedResponse<Submission> bestResponse = reddit.best()
+                    .execute();
 
             assertTrue(bestResponse.hasData());
             assertFalse(bestResponse.hasError());
@@ -49,9 +50,9 @@ class BestClientIntegrationTest extends AuthedIntegrationTest {
     @Test
     void best_returnsNextPage_givenAfter() throws Exception {
         try (RedditWebApp reddit = getClient()) {
-            Response<Page<Submission>> bestResponse = reddit.best()
+            PagedResponse<Submission> bestResponse = reddit.best()
                     .limit(5)
-                    .search();
+                    .execute();
 
             assertTrue(bestResponse.hasData());
             assertFalse(bestResponse.hasError());
@@ -61,10 +62,10 @@ class BestClientIntegrationTest extends AuthedIntegrationTest {
             assertFalse(submissions.isEmpty());
             assertEquals(5, submissions.size());
 
-            Response<Page<Submission>> nextPageResponse = reddit.best()
+            PagedResponse<Submission> nextPageResponse = reddit.best()
                     .after(submissions.getAfter())
                     .limit(5)
-                    .search();
+                    .execute();
 
             Page<Submission> nextPage = nextPageResponse.getData();
 

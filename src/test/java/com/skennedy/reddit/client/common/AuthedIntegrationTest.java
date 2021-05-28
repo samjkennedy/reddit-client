@@ -2,6 +2,9 @@ package com.skennedy.reddit.client.common;
 
 import com.skennedy.reddit.client.RedditWebApp;
 import com.skennedy.reddit.client.authorization.model.Access;
+import com.skennedy.reddit.client.common.model.Scope;
+
+import java.util.Arrays;
 
 public abstract class AuthedIntegrationTest {
 
@@ -13,7 +16,7 @@ public abstract class AuthedIntegrationTest {
             "11894640-cL8yMKlgrrW_C-EBD9PlCtktZnngaQ",
             "bearer",
             3600,
-            "identity mysubreddits read submit vote",
+            Arrays.asList(Scope.IDENTITY, Scope.MYSUBREDDITS, Scope.READ, Scope.SUBMIT, Scope.VOTE),
             "11894640-akut8s5Y3NJbRbAMbnXOvejrwOuy3Q"
     );
 

@@ -1,5 +1,8 @@
 package com.skennedy.reddit.client.submit.request;
 
+import com.skennedy.reddit.client.authorization.model.Access;
+import com.skennedy.reddit.client.common.error.CommonErrorCode;
+import com.skennedy.reddit.client.common.model.Scope;
 import com.skennedy.reddit.client.common.request.Request;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
@@ -7,6 +10,7 @@ import com.skennedy.reddit.client.common.util.RequestUtils;
 import com.skennedy.reddit.client.search.model.Comment;
 import com.skennedy.reddit.client.search.model.Submission;
 import com.skennedy.reddit.client.submit.model.Vote;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -18,19 +22,22 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class VoteRequest extends Request {
 
     private Vote vote;
     private String id;
 
-    public VoteRequest(String token, CloseableHttpClient httpClient, Vote vote) {
-        super(token, httpClient);
+    public VoteRequest(Access access, CloseableHttpClient httpClient, Vote vote) throws IllegalAccessException {
+        super(access, httpClient, Scope.VOTE);
 
         if (vote == null) {
             throw new IllegalArgumentException("Vote must not be null");
         }
         this.vote = vote;
+
     }
 
     public VoteRequest onSubmission(Submission submission) {
@@ -59,13 +66,14 @@ public class VoteRequest extends Request {
 
         List<NameValuePair> params = new ArrayList<>();
 
+        params.add(new BasicNameValuePair("id", id));
         params.add(new BasicNameValuePair("dir", String.valueOf(getDirection(vote))));
         params.add(new BasicNameValuePair("rank", "2")); //Docs just say "an integer greater than 1" - what does this do?
 
         HttpPost post = new HttpPost("https://oauth.reddit.com/api/vote");
         post.setEntity(new UrlEncodedFormEntity(params));
         post.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
-        post.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + token);
+        post.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
 
         try (CloseableHttpResponse response = httpClient.execute(post)) {
 

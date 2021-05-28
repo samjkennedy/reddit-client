@@ -18,7 +18,7 @@ public interface SubmissionClient {
      * @return a SubmitLinkRequest instance
      * @throws MalformedURLException if the link url is not valid
      */
-    SubmitLinkRequest link(String link) throws MalformedURLException;
+    SubmitLinkRequest link(String link) throws MalformedURLException, IllegalAccessException;
 
     /**
      * Submit a text post
@@ -26,7 +26,7 @@ public interface SubmissionClient {
      * @param text The text to submit
      * @return a SubmitTextPostRequest instance
      */
-    SubmitTextPostRequest textPost(String text);
+    SubmitTextPostRequest textPost(String text) throws IllegalAccessException;
 
     /**
      * Submit an image post
@@ -35,7 +35,7 @@ public interface SubmissionClient {
      * @return a SubmitImageRequest instance
      * @throws MalformedURLException if the image url is not valid
      */
-    SubmitImageRequest image(String imgUrl) throws MalformedURLException;
+    SubmitImageRequest image(String imgUrl) throws MalformedURLException, IllegalAccessException;
 
     /**
      * Post a comment
@@ -43,7 +43,7 @@ public interface SubmissionClient {
      * @param commentText The text of the comment
      * @return a SubmitCommentRequest instance
      */
-    SubmitCommentRequest comment(String commentText);
+    SubmitCommentRequest comment(String commentText) throws IllegalAccessException;
 //    SubmitVideoRequest video(Video img);
 //    SubmitVideoGifRequest videoGif(VideoGif img); //wtf is a videogif, webm?
 
@@ -53,5 +53,5 @@ public interface SubmissionClient {
      * @param vote Whether to upvote, downvote, or clear vote for a post or comment
      * @return a VoteRequest instance
      */
-    VoteRequest vote(Vote vote);
+    VoteRequest vote(Vote vote) throws IllegalAccessException;
 }

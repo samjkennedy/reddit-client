@@ -1,5 +1,7 @@
 package com.skennedy.reddit.client.submit.request;
 
+import com.skennedy.reddit.client.authorization.model.Access;
+import com.skennedy.reddit.client.common.model.Scope;
 import com.skennedy.reddit.client.common.request.Request;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
@@ -23,8 +25,8 @@ public abstract class SubmitRequest<T extends SubmitRequest<T>> extends Request 
     boolean nsfw;
     boolean spoiler;
 
-    public SubmitRequest(String token, CloseableHttpClient httpClient) {
-        super(token, httpClient);
+    public SubmitRequest(Access access, CloseableHttpClient httpClient) throws IllegalAccessException {
+        super(access, httpClient, Scope.SUBMIT);
     }
 
     abstract List<NameValuePair> buildParams();
@@ -89,7 +91,7 @@ public abstract class SubmitRequest<T extends SubmitRequest<T>> extends Request 
         HttpPost post = new HttpPost("https://oauth.reddit.com/api/submit");
         post.setEntity(new UrlEncodedFormEntity(params));
         post.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
-        post.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + token);
+        post.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
 
         try (CloseableHttpResponse response = httpClient.execute(post)) {
             if (response.getStatusLine().getStatusCode() != 200) {

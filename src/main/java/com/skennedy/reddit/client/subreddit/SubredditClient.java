@@ -3,7 +3,6 @@ package com.skennedy.reddit.client.subreddit;
 import com.skennedy.reddit.client.common.response.Response;
 import com.skennedy.reddit.client.subreddit.model.SubredditDetails;
 import com.skennedy.reddit.client.subreddit.model.SubredditRule;
-import com.skennedy.reddit.client.subreddit.request.RisingRequest;
 
 import java.util.List;
 
