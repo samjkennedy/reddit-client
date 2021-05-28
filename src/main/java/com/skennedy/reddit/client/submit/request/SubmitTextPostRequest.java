@@ -1,6 +1,5 @@
 package com.skennedy.reddit.client.submit.request;
 
-import com.google.gson.GsonBuilder;
 import com.skennedy.reddit.client.authorization.model.Access;
 import com.skennedy.reddit.client.submit.model.SubmitKind;
 import org.apache.commons.lang3.StringUtils;
