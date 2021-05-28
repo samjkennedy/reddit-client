@@ -1,16 +1,16 @@
-package com.skennedy.reddit.client.best.request;
+package com.skennedy.reddit.client.listing.request;
 
 
 import com.skennedy.reddit.client.authorization.model.Access;
-import com.skennedy.reddit.client.common.model.Scope;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 import com.skennedy.reddit.client.common.request.ListingRequest;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Page;
 import com.skennedy.reddit.client.common.response.PagedResponse;
 import com.skennedy.reddit.client.common.util.RequestUtils;
-import com.skennedy.reddit.client.search.model.Submission;
-import com.skennedy.reddit.client.search.model.SubmissionListing;
-import com.skennedy.reddit.client.search.model.SubmissionThing;
+import com.skennedy.reddit.client.listing.model.Submission;
+import com.skennedy.reddit.client.listing.model.SubmissionListing;
+import com.skennedy.reddit.client.listing.model.SubmissionThing;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
@@ -29,9 +29,10 @@ import java.util.stream.Collectors;
 public class BestRequest extends ListingRequest<BestRequest, Submission> {
 
     public BestRequest(Access access, CloseableHttpClient httpClient) throws IllegalAccessException {
-        super(access, httpClient, Scope.READ);
+        super(access, httpClient, OAuthScope.READ);
     }
 
+    @Override
     public PagedResponse<Submission> execute() throws Exception {
         if (StringUtils.isNoneBlank(afterName, beforeName)) {
             throw new IllegalArgumentException("Only one of before or after can be set, not both");

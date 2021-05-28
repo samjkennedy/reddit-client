@@ -1,7 +1,7 @@
 package com.skennedy.reddit.client.subreddit.request;
 
 import com.skennedy.reddit.client.authorization.model.Access;
-import com.skennedy.reddit.client.common.model.Scope;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 import com.skennedy.reddit.client.common.request.Request;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
@@ -25,8 +25,8 @@ public class SubredditRequest extends Request {
     
     private String subreddit;
     
-    public SubredditRequest(Access access, CloseableHttpClient httpClient, String subreddit, Scope... scopes) throws IllegalAccessException {
-        super(access, httpClient, scopes);
+    public SubredditRequest(Access access, CloseableHttpClient httpClient, String subreddit, OAuthScope... OAuthScopes) throws IllegalAccessException {
+        super(access, httpClient, OAuthScopes);
         if (StringUtils.isBlank(subreddit)) {
             throw new IllegalArgumentException("Subreddit must not be blank");
         }

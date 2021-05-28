@@ -3,21 +3,21 @@ package com.skennedy.reddit.client.common.adapters;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.skennedy.reddit.client.common.model.Scope;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ScopeListTypeAdapter extends TypeAdapter<List<Scope>> {
+public class ScopeListTypeAdapter extends TypeAdapter<List<OAuthScope>> {
 
     @Override
-    public void write(JsonWriter out, List<Scope> scope) throws IOException {
-        if (scope == null) {
+    public void write(JsonWriter out, List<OAuthScope> OAuthScope) throws IOException {
+        if (OAuthScope == null) {
             out.nullValue();
         } else {
-            String output = scope.stream()
+            String output = OAuthScope.stream()
                     .map(Enum::name)
                     .map(String::toLowerCase)
                     .collect(Collectors.joining(" "));
@@ -26,11 +26,11 @@ public class ScopeListTypeAdapter extends TypeAdapter<List<Scope>> {
     }
 
     @Override
-    public List<Scope> read(JsonReader in) throws IOException {
-        List<Scope> scopes = new ArrayList<>();
+    public List<OAuthScope> read(JsonReader in) throws IOException {
+        List<OAuthScope> OAuthScopes = new ArrayList<>();
         for (String scope : in.nextString().split(" ")) {
-            scopes.add(Scope.valueOf(scope.toUpperCase()));
+            OAuthScopes.add(OAuthScope.valueOf(scope.toUpperCase()));
         }
-        return scopes;
+        return OAuthScopes;
     }
 }

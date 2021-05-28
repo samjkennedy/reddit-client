@@ -1,18 +1,18 @@
-package com.skennedy.reddit.client.search.request;
+package com.skennedy.reddit.client.listing.request;
 
 import com.skennedy.reddit.client.authorization.model.Access;
-import com.skennedy.reddit.client.common.model.Scope;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 import com.skennedy.reddit.client.common.request.ListingRequest;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Page;
 import com.skennedy.reddit.client.common.response.PagedResponse;
 import com.skennedy.reddit.client.common.util.RequestUtils;
-import com.skennedy.reddit.client.search.model.SortTime;
-import com.skennedy.reddit.client.search.model.SubSort;
-import com.skennedy.reddit.client.search.model.SubSortTimed;
-import com.skennedy.reddit.client.search.model.Submission;
-import com.skennedy.reddit.client.search.model.SubmissionListing;
-import com.skennedy.reddit.client.search.model.SubmissionThing;
+import com.skennedy.reddit.client.listing.model.SortTime;
+import com.skennedy.reddit.client.listing.model.SubSort;
+import com.skennedy.reddit.client.listing.model.SubSortTimed;
+import com.skennedy.reddit.client.listing.model.Submission;
+import com.skennedy.reddit.client.listing.model.SubmissionListing;
+import com.skennedy.reddit.client.listing.model.SubmissionThing;
 import com.skennedy.reddit.client.subreddit.request.RisingRequest;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +36,7 @@ public class SubmissionRequest extends ListingRequest<SubmissionRequest, Submiss
     private String time;
 
     public SubmissionRequest(Access access, CloseableHttpClient httpClient, String subreddit) throws IllegalAccessException {
-        super(access, httpClient, Scope.READ);
+        super(access, httpClient, OAuthScope.READ);
 
         if (StringUtils.isBlank(subreddit)) {
             throw new IllegalArgumentException("Subreddit name must not be blank");

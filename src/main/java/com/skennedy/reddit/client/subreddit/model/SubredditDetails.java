@@ -3,7 +3,7 @@ package com.skennedy.reddit.client.subreddit.model;
 import com.google.gson.annotations.SerializedName;
 import com.skennedy.reddit.client.common.model.AllowlistStatus;
 import com.skennedy.reddit.client.common.model.LanguageCode;
-import com.skennedy.reddit.client.search.model.CommentSort;
+import com.skennedy.reddit.client.listing.model.CommentSort;
 
 import java.util.Date;
 

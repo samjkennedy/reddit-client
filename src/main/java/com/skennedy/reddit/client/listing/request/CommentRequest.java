@@ -1,26 +1,25 @@
-package com.skennedy.reddit.client.search.request;
+package com.skennedy.reddit.client.listing.request;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.skennedy.reddit.client.authorization.model.Access;
 import com.skennedy.reddit.client.common.error.CommonErrorCode;
-import com.skennedy.reddit.client.common.model.Scope;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 import com.skennedy.reddit.client.common.request.ListingRequest;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Page;
 import com.skennedy.reddit.client.common.response.PagedResponse;
 import com.skennedy.reddit.client.common.util.RequestUtils;
-import com.skennedy.reddit.client.search.error.SearchErrorCode;
-import com.skennedy.reddit.client.search.model.Comment;
-import com.skennedy.reddit.client.search.model.CommentListing;
-import com.skennedy.reddit.client.search.model.CommentSort;
-import com.skennedy.reddit.client.search.model.CommentThing;
+import com.skennedy.reddit.client.listing.error.SearchErrorCode;
+import com.skennedy.reddit.client.listing.model.Comment;
+import com.skennedy.reddit.client.listing.model.CommentListing;
+import com.skennedy.reddit.client.listing.model.CommentSort;
+import com.skennedy.reddit.client.listing.model.CommentThing;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -42,7 +41,7 @@ public class CommentRequest extends ListingRequest<CommentRequest, Comment> {
     private Integer depth;
 
     public CommentRequest(Access access, CloseableHttpClient httpClient, String subreddit, String article) throws IllegalAccessException {
-        super(access, httpClient, Scope.ANY);
+        super(access, httpClient, OAuthScope.ANY);
 
         this.subreddit = subreddit;
         this.article = article;

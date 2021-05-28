@@ -6,7 +6,7 @@ import com.skennedy.reddit.client.authorization.model.Access;
 import com.skennedy.reddit.client.common.adapters.DateLongTypeAdapter;
 import com.skennedy.reddit.client.common.adapters.LanguageCodeAdapter;
 import com.skennedy.reddit.client.common.model.LanguageCode;
-import com.skennedy.reddit.client.common.model.Scope;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 
@@ -21,18 +21,18 @@ public abstract class Request {
     protected CloseableHttpClient httpClient;
     protected Gson gson;
 
-    public Request(Access access, CloseableHttpClient httpClient, Scope... scopes) throws IllegalAccessException {
+    public Request(Access access, CloseableHttpClient httpClient, OAuthScope... OAuthScopes) throws IllegalAccessException {
         if (access == null) {
             throw new IllegalArgumentException("Access must not be null");
         }
         if (httpClient == null) {
             throw new IllegalArgumentException("HTTP Client must not be null");
         }
-        if (!(Set.of(scopes).contains(Scope.ANY) && access.getScopes().size() > 0) && !CollectionUtils.containsAll(access.getScopes(), Set.of(scopes))) {
+        if (!(Set.of(OAuthScopes).contains(OAuthScope.ANY) && access.getOAuthScopes().size() > 0) && !CollectionUtils.containsAll(access.getOAuthScopes(), Set.of(OAuthScopes))) {
             throw new IllegalAccessException("Request requires ["
-                    + Arrays.stream(scopes).map(Scope::name).collect(Collectors.joining(", "))
+                    + Arrays.stream(OAuthScopes).map(OAuthScope::name).collect(Collectors.joining(", "))
                     + "] but provided access contains ["
-                    + access.getScopes().stream().map(Scope::name).collect(Collectors.joining(", "))
+                    + access.getOAuthScopes().stream().map(OAuthScope::name).collect(Collectors.joining(", "))
                     + "]");
         }
 

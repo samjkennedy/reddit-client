@@ -1,4 +1,4 @@
-package com.skennedy.reddit.client.search.model;
+package com.skennedy.reddit.client.listing.model;
 
 public enum CommentSort {
 

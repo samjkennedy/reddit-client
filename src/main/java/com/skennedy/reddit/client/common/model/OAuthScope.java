@@ -1,0 +1,32 @@
+package com.skennedy.reddit.client.common.model;
+
+public enum OAuthScope {
+    ACCOUNT,
+    ANY,
+    CREDDITS,
+    EDIT,
+    FLAIR,
+    HISTORY,
+    IDENTITY,
+    LIVEMANAGE,
+    MODCONFIG,
+    MODCONTRIBUTERS,
+    MODFLAIR,
+    MODLOG,
+    MODMAIL,
+    MODOTHERS,
+    MODPOSTS,
+    MODSELF,
+    MODWIKI,
+    MYSUBREDDITS,
+    PRIVATEMESSAGES,
+    READ,
+    REPORT,
+    SAVE,
+    STRUCTUREDSTYLES,
+    SUBMIT,
+    SUBSCRIBE,
+    VOTE,
+    WIKIEDIT,
+    WIKIREAD
+}

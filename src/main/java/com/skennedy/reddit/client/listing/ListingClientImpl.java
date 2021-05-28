@@ -1,21 +1,22 @@
-package com.skennedy.reddit.client.search;
+package com.skennedy.reddit.client.listing;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.skennedy.reddit.client.authorization.model.Access;
-import com.skennedy.reddit.client.search.model.Submission;
-import com.skennedy.reddit.client.search.request.CommentRequest;
-import com.skennedy.reddit.client.search.request.SubmissionRequest;
-import com.skennedy.reddit.client.search.request.SubredditSearchRequest;
+import com.skennedy.reddit.client.listing.request.BestRequest;
+import com.skennedy.reddit.client.listing.model.Submission;
+import com.skennedy.reddit.client.listing.request.CommentRequest;
+import com.skennedy.reddit.client.listing.request.SubmissionRequest;
+import com.skennedy.reddit.client.listing.request.SubredditSearchRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 
-public class SearchClientImpl implements SearchClient {
+public class ListingClientImpl implements ListingClient {
 
     private final Access access;
     private final CloseableHttpClient httpClient;
     final Gson gson;
 
-    public SearchClientImpl(Access access, CloseableHttpClient httpClient) {
+    public ListingClientImpl(Access access, CloseableHttpClient httpClient) {
         this.access = access;
         this.httpClient = httpClient;
         gson = new GsonBuilder().create();
@@ -39,6 +40,11 @@ public class SearchClientImpl implements SearchClient {
     @Override
     public CommentRequest comments(String subreddit, String article) throws IllegalAccessException {
         return new CommentRequest(access, httpClient, subreddit, article);
+    }
+
+    @Override
+    public BestRequest best() throws IllegalAccessException {
+        return new BestRequest(access, httpClient);
     }
 
 }

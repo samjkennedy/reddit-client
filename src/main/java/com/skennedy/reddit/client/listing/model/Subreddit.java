@@ -1,4 +1,4 @@
-package com.skennedy.reddit.client.search.model;
+package com.skennedy.reddit.client.listing.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.skennedy.reddit.client.common.model.AllowlistStatus;

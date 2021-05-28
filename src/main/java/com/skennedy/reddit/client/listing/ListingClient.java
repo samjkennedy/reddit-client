@@ -1,11 +1,12 @@
-package com.skennedy.reddit.client.search;
+package com.skennedy.reddit.client.listing;
 
-import com.skennedy.reddit.client.search.model.Submission;
-import com.skennedy.reddit.client.search.request.CommentRequest;
-import com.skennedy.reddit.client.search.request.SubmissionRequest;
-import com.skennedy.reddit.client.search.request.SubredditSearchRequest;
+import com.skennedy.reddit.client.listing.request.BestRequest;
+import com.skennedy.reddit.client.listing.model.Submission;
+import com.skennedy.reddit.client.listing.request.CommentRequest;
+import com.skennedy.reddit.client.listing.request.SubmissionRequest;
+import com.skennedy.reddit.client.listing.request.SubredditSearchRequest;
 
-public interface SearchClient {
+public interface ListingClient {
 
     /**
      * Begins a flow for searching submissions from a given subreddit.
@@ -41,4 +42,6 @@ public interface SearchClient {
      * @see Submission#getId() to get the article id
      */
     CommentRequest comments(String subreddit, String article) throws IllegalAccessException;
+
+    BestRequest best() throws IllegalAccessException;
 }

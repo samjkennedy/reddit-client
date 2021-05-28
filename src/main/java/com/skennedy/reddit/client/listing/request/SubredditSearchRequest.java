@@ -1,4 +1,4 @@
-package com.skennedy.reddit.client.search.request;
+package com.skennedy.reddit.client.listing.request;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -8,7 +8,7 @@ import com.skennedy.reddit.client.common.request.Request;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
 import com.skennedy.reddit.client.common.util.RequestUtils;
-import com.skennedy.reddit.client.search.model.Subreddit;
+import com.skennedy.reddit.client.listing.model.Subreddit;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;

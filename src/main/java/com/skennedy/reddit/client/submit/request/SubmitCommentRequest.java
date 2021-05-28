@@ -1,13 +1,13 @@
 package com.skennedy.reddit.client.submit.request;
 
 import com.skennedy.reddit.client.authorization.model.Access;
-import com.skennedy.reddit.client.common.model.Scope;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 import com.skennedy.reddit.client.common.request.Request;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
 import com.skennedy.reddit.client.common.util.RequestUtils;
-import com.skennedy.reddit.client.search.model.Comment;
-import com.skennedy.reddit.client.search.model.Submission;
+import com.skennedy.reddit.client.listing.model.Comment;
+import com.skennedy.reddit.client.listing.model.Submission;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -26,7 +26,7 @@ public class SubmitCommentRequest extends Request {
     String parent;
 
     public SubmitCommentRequest(Access access, CloseableHttpClient httpClient, String text) throws IllegalAccessException {
-        super(access, httpClient, Scope.ANY);
+        super(access, httpClient, OAuthScope.ANY);
         if (StringUtils.isBlank(text)) {
             throw new IllegalArgumentException("Text must not be blank");
         }

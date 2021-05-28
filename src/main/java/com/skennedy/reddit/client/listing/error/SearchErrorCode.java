@@ -1,4 +1,4 @@
-package com.skennedy.reddit.client.search.error;
+package com.skennedy.reddit.client.listing.error;
 
 import com.skennedy.reddit.client.common.error.ErrorCode;
 
