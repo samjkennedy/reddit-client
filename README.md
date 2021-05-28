@@ -5,7 +5,7 @@ reddit-client
 
 reddit-client is a WIP fluent API styled Java client for the Reddit API. It's intended to make using the Reddit API in your Java program as easy and readable as possible.
 
-##How to use it?
+## How to use it?
 
 ### Conventions
 
