@@ -5,18 +5,20 @@ import com.skennedy.reddit.client.common.AuthedIntegrationTest;
 import com.skennedy.reddit.client.common.response.Page;
 import com.skennedy.reddit.client.common.response.PagedResponse;
 import com.skennedy.reddit.client.common.response.Response;
-import com.skennedy.reddit.client.search.model.Comment;
-import com.skennedy.reddit.client.search.model.Submission;
+import com.skennedy.reddit.client.listing.model.Comment;
+import com.skennedy.reddit.client.listing.model.Submission;
 import com.skennedy.reddit.client.submit.model.Vote;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static com.skennedy.reddit.client.search.model.SubSort.NEW;
+import static com.skennedy.reddit.client.listing.model.SubSort.NEW;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SubmissionClientIntegrationTest extends AuthedIntegrationTest {
 
     @Test
+    @Disabled("Don't post automatically")
     void submitText_submitsTextPost_givenValidRequest() throws Exception {
 
         try (RedditWebApp reddit = getClient()) {
@@ -32,6 +34,7 @@ class SubmissionClientIntegrationTest extends AuthedIntegrationTest {
     }
 
     @Test
+    @Disabled("Don't post automatically")
     void submitLink_submitsLink_givenValidRequest() throws Exception {
 
         try (RedditWebApp reddit = getClient()) {
@@ -47,6 +50,7 @@ class SubmissionClientIntegrationTest extends AuthedIntegrationTest {
     }
 
     @Test
+    @Disabled("Don't post automatically")
     void submitImage_submitsImage_givenValidRequest() throws Exception {
 
         try (RedditWebApp reddit = getClient()) {
@@ -62,11 +66,12 @@ class SubmissionClientIntegrationTest extends AuthedIntegrationTest {
     }
 
     @Test
+    @Disabled("Don't post automatically")
     void submitComment_submitsComment_givenValidRequest() throws Exception {
 
         try (RedditWebApp reddit = getClient()) {
 
-            PagedResponse<Submission> pageResponse = reddit.search()
+            PagedResponse<Submission> pageResponse = reddit.listing()
                     .r("ShotgunSeat")
                     .by(NEW)
                     .limit(1)
@@ -83,7 +88,7 @@ class SubmissionClientIntegrationTest extends AuthedIntegrationTest {
 
             assertFalse(commentResponse.hasError());
 
-            Response<Page<Comment>> commentPageResponse = reddit.search()
+            Response<Page<Comment>> commentPageResponse = reddit.listing()
                     .comments(submission)
                     .limit(1)
                     .execute();
@@ -102,11 +107,12 @@ class SubmissionClientIntegrationTest extends AuthedIntegrationTest {
     }
 
     @Test
+    @Disabled("Don't post automatically")
     void vote_canVoteOnSubmission() throws Exception {
 
         try (RedditWebApp reddit = getClient()) {
 
-            PagedResponse<Submission> pageResponse = reddit.search()
+            PagedResponse<Submission> pageResponse = reddit.listing()
                     .r("ShotgunSeat")
                     .by(NEW)
                     .limit(1)

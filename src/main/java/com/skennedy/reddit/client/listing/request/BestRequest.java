@@ -1,6 +1,8 @@
-package com.skennedy.reddit.client.subreddit.request;
+package com.skennedy.reddit.client.listing.request;
+
 
 import com.skennedy.reddit.client.authorization.model.Access;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 import com.skennedy.reddit.client.common.request.ListingRequest;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Page;
@@ -24,19 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class RisingRequest extends ListingRequest<RisingRequest, Submission> {
+public class BestRequest extends ListingRequest<BestRequest, Submission> {
 
-    private final String subreddit;
-
-    public RisingRequest(Access access, CloseableHttpClient httpClient, String subreddit) throws IllegalAccessException {
-        super(access, httpClient);
-
-        if (StringUtils.isBlank(subreddit)) {
-            throw new IllegalArgumentException("Subreddit must not be blank");
-        }
-
-        this.subreddit = subreddit;
-        this.limit = 25;
+    public BestRequest(Access access, CloseableHttpClient httpClient) throws IllegalAccessException {
+        super(access, httpClient, OAuthScope.READ);
     }
 
     @Override
@@ -45,9 +38,17 @@ public class RisingRequest extends ListingRequest<RisingRequest, Submission> {
             throw new IllegalArgumentException("Only one of before or after can be set, not both");
         }
 
-        List<NameValuePair> params = getListingParams();
+        List<NameValuePair> params = new ArrayList<>();
 
-        String uri = new URIBuilder("https://oauth.reddit.com/r/" + subreddit + "/rising")
+        params.add(new BasicNameValuePair("limit", String.valueOf(limit)));
+        if (StringUtils.isNotBlank(afterName)) {
+            params.add(new BasicNameValuePair("after", afterName));
+        }
+        if (StringUtils.isNotBlank(beforeName)) {
+            params.add(new BasicNameValuePair("before", beforeName));
+        }
+
+        String uri = new URIBuilder("https://oauth.reddit.com/best")
                 .addParameters(params)
                 .toString();
 

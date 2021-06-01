@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.skennedy.reddit.client.authorization.model.Access;
 import com.skennedy.reddit.client.common.adapters.ScopeListTypeAdapter;
-import com.skennedy.reddit.client.common.model.Scope;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
 import com.skennedy.reddit.client.common.util.RequestUtils;
@@ -140,7 +140,7 @@ class AuthClientImpl implements AuthClient {
                 }
                 return Response.success(new GsonBuilder()
                         //Christ
-                        .registerTypeAdapter(new TypeToken<List<Scope>>(){}.getType(), new ScopeListTypeAdapter())
+                        .registerTypeAdapter(new TypeToken<List<OAuthScope>>(){}.getType(), new ScopeListTypeAdapter())
                         .create()
                         .fromJson(content, Access.class));
             }

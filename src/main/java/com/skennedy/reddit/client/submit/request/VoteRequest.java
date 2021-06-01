@@ -1,16 +1,14 @@
 package com.skennedy.reddit.client.submit.request;
 
 import com.skennedy.reddit.client.authorization.model.Access;
-import com.skennedy.reddit.client.common.error.CommonErrorCode;
-import com.skennedy.reddit.client.common.model.Scope;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 import com.skennedy.reddit.client.common.request.Request;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
 import com.skennedy.reddit.client.common.util.RequestUtils;
-import com.skennedy.reddit.client.search.model.Comment;
-import com.skennedy.reddit.client.search.model.Submission;
+import com.skennedy.reddit.client.listing.model.Comment;
+import com.skennedy.reddit.client.listing.model.Submission;
 import com.skennedy.reddit.client.submit.model.Vote;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -22,8 +20,6 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class VoteRequest extends Request {
 
@@ -31,7 +27,7 @@ public class VoteRequest extends Request {
     private String id;
 
     public VoteRequest(Access access, CloseableHttpClient httpClient, Vote vote) throws IllegalAccessException {
-        super(access, httpClient, Scope.VOTE);
+        super(access, httpClient, OAuthScope.VOTE);
 
         if (vote == null) {
             throw new IllegalArgumentException("Vote must not be null");

@@ -3,15 +3,14 @@ package com.skennedy.reddit.client;
 import com.skennedy.reddit.client.account.AccountClient;
 import com.skennedy.reddit.client.account.AccountClientFactory;
 import com.skennedy.reddit.client.authorization.model.Access;
-import com.skennedy.reddit.client.best.BestClient;
-import com.skennedy.reddit.client.best.BestClientFactory;
-import com.skennedy.reddit.client.best.request.BestRequest;
-import com.skennedy.reddit.client.search.SearchClient;
-import com.skennedy.reddit.client.search.SearchClientFactory;
+import com.skennedy.reddit.client.listing.ListingClient;
+import com.skennedy.reddit.client.listing.SearchClientFactory;
 import com.skennedy.reddit.client.submit.SubmissionClient;
 import com.skennedy.reddit.client.submit.SubmissionClientFactory;
 import com.skennedy.reddit.client.subreddit.SubredditClient;
 import com.skennedy.reddit.client.subreddit.SubredditClientFactory;
+import com.skennedy.reddit.client.users.UserClient;
+import com.skennedy.reddit.client.users.UserClientImpl;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 public abstract class AbstractReddit implements Reddit {
@@ -20,10 +19,10 @@ public abstract class AbstractReddit implements Reddit {
     protected CloseableHttpClient httpClient;
 
     private AccountClient accountClient;
-    private SearchClient searchClient;
+    private ListingClient listingClient;
     private SubmissionClient submissionClient;
     private SubredditClient subredditClient;
-    private BestClient bestClient;
+    private UserClient userClient;
 
     public AbstractReddit(Access access, CloseableHttpClient httpClient) {
         this.access = access;
@@ -39,11 +38,11 @@ public abstract class AbstractReddit implements Reddit {
     }
 
     @Override
-    public SearchClient search() {
-        if (searchClient == null) {
-            searchClient = SearchClientFactory.getClient(access, httpClient);
+    public ListingClient listing() {
+        if (listingClient == null) {
+            listingClient = SearchClientFactory.getClient(access, httpClient);
         }
-        return searchClient;
+        return listingClient;
     }
 
     @Override
@@ -63,19 +62,19 @@ public abstract class AbstractReddit implements Reddit {
     }
 
     @Override
-    public BestRequest best() throws IllegalAccessException {
-        if (bestClient == null) {
-            bestClient = BestClientFactory.getClient(access, httpClient);
+    public UserClient users() {
+        if (userClient == null) {
+            userClient = new UserClientImpl(access, httpClient);
         }
-        return bestClient.best();
+        return userClient;
     }
 
     protected void refreshClients(Access access) {
         if (accountClient == null) {
             accountClient = AccountClientFactory.getClient(access, httpClient);
         }
-        if (searchClient == null) {
-            searchClient = SearchClientFactory.getClient(access, httpClient);
+        if (listingClient == null) {
+            listingClient = SearchClientFactory.getClient(access, httpClient);
         }
         if (submissionClient == null) {
             submissionClient = SubmissionClientFactory.getClient(access, httpClient);
@@ -83,8 +82,8 @@ public abstract class AbstractReddit implements Reddit {
         if (subredditClient == null) {
             subredditClient = SubredditClientFactory.getClient(access, httpClient);
         }
-        if (bestClient == null) {
-            bestClient = BestClientFactory.getClient(access, httpClient);
+        if (userClient == null) {
+            userClient = new UserClientImpl(access, httpClient);
         }
     }
 }

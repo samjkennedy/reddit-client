@@ -1,9 +1,15 @@
 package com.skennedy.reddit.client.common.request;
 
 import com.skennedy.reddit.client.authorization.model.Access;
-import com.skennedy.reddit.client.common.model.Scope;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 import com.skennedy.reddit.client.common.response.PagedResponse;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.NameValuePair;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a request that returns a reddit listing
@@ -13,12 +19,15 @@ import org.apache.http.impl.client.CloseableHttpClient;
  */
 public abstract class ListingRequest<T extends ListingRequest<T, D>, D> extends Request {
 
+    private static final int DEFAULT_LIMIT = 25;
     protected int limit;
     protected String beforeName;
     protected String afterName;
 
-    public ListingRequest(Access access, CloseableHttpClient httpClient, Scope... scopes) throws IllegalAccessException {
-        super(access, httpClient, scopes);
+    public ListingRequest(Access access, CloseableHttpClient httpClient, OAuthScope... oAuthScopes) throws IllegalAccessException {
+        super(access, httpClient, oAuthScopes);
+
+        this.limit = DEFAULT_LIMIT;
     }
 
     /**
@@ -55,6 +64,21 @@ public abstract class ListingRequest<T extends ListingRequest<T, D>, D> extends 
         this.afterName = after;
 
         return (T) this;
+    }
+
+    public List<NameValuePair> getListingParams() {
+
+        List<NameValuePair> params = new ArrayList<>();
+
+        params.add(new BasicNameValuePair("limit", String.valueOf(limit)));
+        if (StringUtils.isNotBlank(afterName)) {
+            params.add(new BasicNameValuePair("after", afterName));
+        }
+        if (StringUtils.isNotBlank(beforeName)) {
+            params.add(new BasicNameValuePair("before", beforeName));
+        }
+
+        return params;
     }
 
     public abstract PagedResponse<D> execute() throws Exception;

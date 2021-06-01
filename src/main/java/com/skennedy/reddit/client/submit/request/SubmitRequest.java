@@ -1,7 +1,7 @@
 package com.skennedy.reddit.client.submit.request;
 
 import com.skennedy.reddit.client.authorization.model.Access;
-import com.skennedy.reddit.client.common.model.Scope;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 import com.skennedy.reddit.client.common.request.Request;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
@@ -26,7 +26,7 @@ public abstract class SubmitRequest<T extends SubmitRequest<T>> extends Request 
     boolean spoiler;
 
     public SubmitRequest(Access access, CloseableHttpClient httpClient) throws IllegalAccessException {
-        super(access, httpClient, Scope.SUBMIT);
+        super(access, httpClient, OAuthScope.SUBMIT);
     }
 
     abstract List<NameValuePair> buildParams();

@@ -1,13 +1,12 @@
-package com.skennedy.reddit.client.subreddit.model;
+package com.skennedy.reddit.client.listing.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.skennedy.reddit.client.common.model.AllowlistStatus;
 import com.skennedy.reddit.client.common.model.LanguageCode;
-import com.skennedy.reddit.client.listing.model.CommentSort;
 
 import java.util.Date;
 
-public class SubredditDetails {
+public class Subreddit {
 
     @SerializedName("user_flair_background_color")
     private String userFlairBackgroundColor;

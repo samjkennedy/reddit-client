@@ -6,7 +6,7 @@ import com.skennedy.reddit.client.authorization.model.Access;
 import com.skennedy.reddit.client.common.adapters.DateLongTypeAdapter;
 import com.skennedy.reddit.client.common.adapters.LanguageCodeAdapter;
 import com.skennedy.reddit.client.common.model.LanguageCode;
-import com.skennedy.reddit.client.common.model.Scope;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 import com.skennedy.reddit.client.subreddit.request.SubredditRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 
@@ -29,6 +29,6 @@ public class SubredditClientImpl implements SubredditClient {
 
     @Override
     public SubredditRequest r(String subreddit) throws IllegalAccessException {
-        return new SubredditRequest(access, httpClient, subreddit,Scope.READ);
+        return new SubredditRequest(access, httpClient, subreddit, OAuthScope.READ);
     }
 }

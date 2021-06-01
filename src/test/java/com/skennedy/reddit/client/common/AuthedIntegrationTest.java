@@ -2,7 +2,7 @@ package com.skennedy.reddit.client.common;
 
 import com.skennedy.reddit.client.RedditWebApp;
 import com.skennedy.reddit.client.authorization.model.Access;
-import com.skennedy.reddit.client.common.model.Scope;
+import com.skennedy.reddit.client.common.model.OAuthScope;
 
 import java.util.Arrays;
 
@@ -13,11 +13,11 @@ public abstract class AuthedIntegrationTest {
     private static final String clientSecret = "_wM4AZtTKFyS6M3roRThEqzTWGCAUA";
 
     private static Access access = new Access(
-            "11894640-cL8yMKlgrrW_C-EBD9PlCtktZnngaQ",
+            "11894640-NWKLMBt_zlnppZzeEoJfjxOZHEtuBA",
             "bearer",
             3600,
-            Arrays.asList(Scope.IDENTITY, Scope.MYSUBREDDITS, Scope.READ, Scope.SUBMIT, Scope.VOTE),
-            "11894640-akut8s5Y3NJbRbAMbnXOvejrwOuy3Q"
+            Arrays.asList(OAuthScope.HISTORY, OAuthScope.IDENTITY, OAuthScope.MYSUBREDDITS, OAuthScope.READ, OAuthScope.SUBMIT, OAuthScope.VOTE),
+            "11894640-L1k3p_heQ9KNGz6knqe9MNUVnyS1Yg"
     );
 
     public RedditWebApp getClient() throws Exception {

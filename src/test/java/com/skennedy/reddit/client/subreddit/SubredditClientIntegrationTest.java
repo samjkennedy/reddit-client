@@ -3,6 +3,8 @@ package com.skennedy.reddit.client.subreddit;
 import com.skennedy.reddit.client.Reddit;
 import com.skennedy.reddit.client.common.AuthedIntegrationTest;
 import com.skennedy.reddit.client.common.response.Response;
+import com.skennedy.reddit.client.listing.model.Sticky;
+import com.skennedy.reddit.client.listing.model.Submission;
 import com.skennedy.reddit.client.subreddit.model.Sidebar;
 import com.skennedy.reddit.client.subreddit.model.SubredditDetails;
 import com.skennedy.reddit.client.subreddit.model.SubredditRule;
@@ -64,6 +66,38 @@ class SubredditClientIntegrationTest extends AuthedIntegrationTest {
             Sidebar sidebar = sidebarResponse.getData();
 
             assertNotNull(sidebar);
+        }
+    }
+
+    @Test
+    void sticky_canGetFirstSticky_givenSubreddit() throws Exception {
+        try (Reddit reddit = getClient()) {
+            Response<Submission> stickyResponse = reddit.subreddits()
+                    .r("starfield")
+                    .sticky(Sticky.FIRST);
+
+            assertTrue(stickyResponse.hasData());
+            assertFalse(stickyResponse.hasError());
+
+            Submission submission = stickyResponse.getData();
+
+            assertNotNull(submission);
+        }
+    }
+
+    @Test
+    void sticky_canGetSecondSticky_givenSubreddit() throws Exception {
+        try (Reddit reddit = getClient()) {
+            Response<Submission> stickyResponse = reddit.subreddits()
+                    .r("starfield")
+                    .sticky(Sticky.SECOND);
+
+            assertTrue(stickyResponse.hasData());
+            assertFalse(stickyResponse.hasError());
+
+            Submission submission = stickyResponse.getData();
+
+            assertNotNull(submission);
         }
     }
 

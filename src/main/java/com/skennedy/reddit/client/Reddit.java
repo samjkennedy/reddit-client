@@ -1,10 +1,10 @@
 package com.skennedy.reddit.client;
 
 import com.skennedy.reddit.client.account.AccountClient;
-import com.skennedy.reddit.client.best.request.BestRequest;
-import com.skennedy.reddit.client.search.SearchClient;
+import com.skennedy.reddit.client.listing.ListingClient;
 import com.skennedy.reddit.client.submit.SubmissionClient;
 import com.skennedy.reddit.client.subreddit.SubredditClient;
+import com.skennedy.reddit.client.users.UserClient;
 
 public interface Reddit extends AutoCloseable {
 
@@ -23,9 +23,9 @@ public interface Reddit extends AutoCloseable {
 
     /**
      * Begins a flow for searching posts, comments, and subreddits
-     * @return A SearchClient instance
+     * @return A ListingClient instance
      */
-    SearchClient search();
+    ListingClient listing();
 
     /**
      * Begins a flow for submitting posts, comments, and replies
@@ -40,8 +40,8 @@ public interface Reddit extends AutoCloseable {
     SubredditClient subreddits();
 
     /**
-     * Creates a request to get the front page
-     * @return A BestRequest instance
+     * Begins a flow for accessing details of Reddit users such as their post history
+     * @return A UserClient instance
      */
-    BestRequest best() throws IllegalAccessException;
+    UserClient users();
 }
