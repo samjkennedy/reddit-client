@@ -27,11 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ListingClientIntegrationTest extends AuthedIntegrationTest {
 
     @Test
-    void search_returnsTopPosts_givenSubredditTop() throws Exception {
+    void r_returnsTopPosts_givenSubredditTop() throws Exception {
         try (Reddit reddit = getClient()) {
 
             PagedResponse<Submission> pageResponse = reddit.listing()
-                    .r("skyrim")
+                    .r("starfield")
                     .by(SubSort.HOT)
                     .limit(5)
                     .execute();
@@ -44,13 +44,13 @@ class ListingClientIntegrationTest extends AuthedIntegrationTest {
             assertTrue(submissions.size() >= 5); //Stickied posts don't count towards the limit....
 
             for (Submission submission : submissions) {
-                assertEquals("skyrim", submission.getSubreddit());
+                assertEquals("starfield", submission.getSubreddit());
             }
         }
     }
 
     @Test
-    void search_returnsMultiplePages_givenAfter() throws Exception {
+    void r_returnsMultiplePages_givenAfter() throws Exception {
         try (Reddit reddit = getClient()) {
 
             PagedResponse<Submission> pageResponse = reddit.listing()

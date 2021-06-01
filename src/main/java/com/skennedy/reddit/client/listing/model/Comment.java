@@ -1,6 +1,9 @@
 package com.skennedy.reddit.client.listing.model;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.skennedy.reddit.client.common.adapters.BooleanAsNullDateAdapter;
+import com.skennedy.reddit.client.common.adapters.EmptyStringAsNullDeserializer;
 
 import java.util.Date;
 import java.util.List;
@@ -17,6 +20,7 @@ public class Comment {
     private String linkId;
     @SerializedName("author_flair_template_id")
     private String authorFlairTemplateId;
+    @JsonAdapter(EmptyStringAsNullDeserializer.class)
     private CommentListing replies;
     private boolean saved;
     private String id;
@@ -37,7 +41,8 @@ public class Comment {
     @SerializedName("subreddit_id")
     private String subredditId;
     private String body;
-    private boolean edited;
+    @JsonAdapter(BooleanAsNullDateAdapter.class)
+    private Date edited;
     private int downs;
     @SerializedName("is_submitter")
     private boolean isSubmitter;
@@ -142,7 +147,11 @@ public class Comment {
         return body;
     }
 
-    public boolean isEdited() {
+    /**
+     * Returns when the comment was edited. If the comment has never been edited returns null
+     * @return when the comment was edited. If the comment has never been edited returns null
+     */
+    public Date getEdited() {
         return edited;
     }
 

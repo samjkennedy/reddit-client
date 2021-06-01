@@ -3,7 +3,7 @@ reddit-client
 
 ## What is reddit-client?
 
-reddit-client is a WIP fluent API styled Java client for the Reddit API. It's intended to make using the Reddit API in your Java program as easy and readable as possible.
+reddit-client is a WIP fluent Java client for the Reddit API. It's intended to make using the Reddit API in your Java program as easy and readable as possible.
 
 ## How to use it?
 
@@ -41,21 +41,21 @@ try (Reddit reddit = new RedditWebApp(access, clientId, clientSecret)) {
 }
 ```
 
-or to get the sidebar of a subreddit, call `.subreddits()` to begin a subreddit category flow:
+or to get the about page of a subreddit, call `.subreddits()` to begin a subreddit category flow:
 
 ```
 try (Reddit reddit = new RedditWebApp(access, clientId, clientSecret)) {
-    Response<Sidebar> sidebarResponse = reddit.subreddits()
+    Response<SubredditDetails> subredditDetailsResponse = reddit.subreddits()
         .r("science")
-        .sidebar();
+        .about();
 }
 ```
 
-NB: Due to a bug on reddit's side this call will not return anything for the time being
-
 #### Requests/Responses:
 
-All requests will return a `Response<Data>` object where `Data` is the data class expected (e.g. `Submission`). Requests that return a Reddit `Listing` will return a `PagedResponse<data>` that has utilities for paging through the response.
+All requests will return a `Response<T>` object where `T` is the data class expected (e.g. `Submission`). 
+
+Requests that return a Reddit `Listing` will return a `PagedResponse<T>` that has utilities for paging through the response.
 
 All Responses have a `data` field and an `error` field. If there is an error with the request (insufficient permissions, token expired, reddit servers down) then `data` will be null and `error` will contain information about the error.
 
@@ -69,22 +69,13 @@ Coming soon!
 
 Getting an access for a webapp:
 
-```
-//Set up your clientId, clientSecret, and redirectUri up here
-//Get temporary authCode
-
-AuthClient authClient = AuthClientFactory.getClient();
-Response<Access> accessResponse = authClient.getAccess(clientId, clientSecret, tempAuthCode, redirectUri);
-if (accessResponse.hasError()) {
-    //handle error
-}
-Access access = accessResponse.getData();
-```
+TODO!
 
 Getting several pages of 25 results from the user's front page:
 ```
 try (Reddit reddit = new RedditWebApp(access, clientId, clientSecret)) {
-    PagedResponse<Submission> bestResponse = reddit.best()
+    PagedResponse<Submission> bestResponse = reddit.listing()
+            .best()
             .limit(25)
             .execute();
     

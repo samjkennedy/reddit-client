@@ -7,6 +7,7 @@ import com.skennedy.reddit.client.account.model.KarmaListing;
 import com.skennedy.reddit.client.account.model.KarmaThing;
 import com.skennedy.reddit.client.account.model.SubredditKarma;
 import com.skennedy.reddit.client.authorization.model.Access;
+import com.skennedy.reddit.client.common.adapters.DateLongTypeAdapter;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
 import com.skennedy.reddit.client.common.util.RequestUtils;
@@ -17,6 +18,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +34,9 @@ public class AccountClientImpl implements AccountClient {
     public AccountClientImpl(Access access, CloseableHttpClient httpClient) {
         this.access = access;
         this.httpClient = httpClient;
-        gson = new GsonBuilder().create();
+        gson = new GsonBuilder()
+                .registerTypeAdapter(Date.class, new DateLongTypeAdapter())
+                .create();
     }
 
     @Override

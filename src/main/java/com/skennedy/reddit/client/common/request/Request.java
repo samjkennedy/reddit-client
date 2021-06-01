@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.skennedy.reddit.client.authorization.model.Access;
 import com.skennedy.reddit.client.common.adapters.DateLongTypeAdapter;
 import com.skennedy.reddit.client.common.adapters.LanguageCodeAdapter;
+import com.skennedy.reddit.client.common.adapters.ScopeListTypeAdapter;
 import com.skennedy.reddit.client.common.model.LanguageCode;
 import com.skennedy.reddit.client.common.model.OAuthScope;
 import org.apache.commons.collections4.CollectionUtils;
@@ -42,6 +43,7 @@ public abstract class Request {
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(Date.class, new DateLongTypeAdapter())
                 .registerTypeAdapter(LanguageCode.class, new LanguageCodeAdapter())
+                .registerTypeAdapter(OAuthScope.class, new ScopeListTypeAdapter())
                 .create();
     }
 }

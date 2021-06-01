@@ -9,6 +9,8 @@ import com.skennedy.reddit.client.submit.SubmissionClient;
 import com.skennedy.reddit.client.submit.SubmissionClientFactory;
 import com.skennedy.reddit.client.subreddit.SubredditClient;
 import com.skennedy.reddit.client.subreddit.SubredditClientFactory;
+import com.skennedy.reddit.client.users.UserClient;
+import com.skennedy.reddit.client.users.UserClientImpl;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 public abstract class AbstractReddit implements Reddit {
@@ -20,6 +22,7 @@ public abstract class AbstractReddit implements Reddit {
     private ListingClient listingClient;
     private SubmissionClient submissionClient;
     private SubredditClient subredditClient;
+    private UserClient userClient;
 
     public AbstractReddit(Access access, CloseableHttpClient httpClient) {
         this.access = access;
@@ -58,6 +61,14 @@ public abstract class AbstractReddit implements Reddit {
         return subredditClient;
     }
 
+    @Override
+    public UserClient users() {
+        if (userClient == null) {
+            userClient = new UserClientImpl(access, httpClient);
+        }
+        return userClient;
+    }
+
     protected void refreshClients(Access access) {
         if (accountClient == null) {
             accountClient = AccountClientFactory.getClient(access, httpClient);
@@ -70,6 +81,9 @@ public abstract class AbstractReddit implements Reddit {
         }
         if (subredditClient == null) {
             subredditClient = SubredditClientFactory.getClient(access, httpClient);
+        }
+        if (userClient == null) {
+            userClient = new UserClientImpl(access, httpClient);
         }
     }
 }

@@ -4,6 +4,7 @@ import com.skennedy.reddit.client.account.AccountClient;
 import com.skennedy.reddit.client.listing.ListingClient;
 import com.skennedy.reddit.client.submit.SubmissionClient;
 import com.skennedy.reddit.client.subreddit.SubredditClient;
+import com.skennedy.reddit.client.users.UserClient;
 
 public interface Reddit extends AutoCloseable {
 
@@ -37,4 +38,10 @@ public interface Reddit extends AutoCloseable {
      * @return A SubredditClient instance
      */
     SubredditClient subreddits();
+
+    /**
+     * Begins a flow for accessing details of Reddit users such as their post history
+     * @return A UserClient instance
+     */
+    UserClient users();
 }
