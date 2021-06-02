@@ -24,7 +24,7 @@ public abstract class ListingRequest<T extends ListingRequest<T, D>, D> extends 
     protected String beforeName;
     protected String afterName;
 
-    public ListingRequest(Access access, CloseableHttpClient httpClient, OAuthScope... oAuthScopes) throws IllegalAccessException {
+    public ListingRequest(Access access, CloseableHttpClient httpClient, OAuthScope... oAuthScopes) {
         super(access, httpClient, oAuthScopes);
 
         this.limit = DEFAULT_LIMIT;
@@ -68,6 +68,10 @@ public abstract class ListingRequest<T extends ListingRequest<T, D>, D> extends 
 
     public List<NameValuePair> getListingParams() {
 
+        if (StringUtils.isNoneBlank(afterName, beforeName)) {
+            throw new IllegalArgumentException("Only one of before or after can be set, not both");
+        }
+
         List<NameValuePair> params = new ArrayList<>();
 
         params.add(new BasicNameValuePair("limit", String.valueOf(limit)));
@@ -81,6 +85,6 @@ public abstract class ListingRequest<T extends ListingRequest<T, D>, D> extends 
         return params;
     }
 
-    public abstract PagedResponse<D> execute() throws Exception;
+    public abstract PagedResponse<D> execute();
 
 }

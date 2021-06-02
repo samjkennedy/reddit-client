@@ -22,16 +22,16 @@ public abstract class Request {
     protected CloseableHttpClient httpClient;
     protected Gson gson;
 
-    public Request(Access access, CloseableHttpClient httpClient, OAuthScope... OAuthScopes) throws IllegalAccessException {
+    public Request(Access access, CloseableHttpClient httpClient, OAuthScope... oAuthScopes) {
         if (access == null) {
             throw new IllegalArgumentException("Access must not be null");
         }
         if (httpClient == null) {
             throw new IllegalArgumentException("HTTP Client must not be null");
         }
-        if (!(Set.of(OAuthScopes).contains(OAuthScope.ANY) && access.getOAuthScopes().size() > 0) && !CollectionUtils.containsAll(access.getOAuthScopes(), Set.of(OAuthScopes))) {
-            throw new IllegalAccessException("Request requires ["
-                    + Arrays.stream(OAuthScopes).map(OAuthScope::name).collect(Collectors.joining(", "))
+        if (!(Set.of(oAuthScopes).contains(OAuthScope.ANY) && access.getOAuthScopes().size() > 0) && !CollectionUtils.containsAll(access.getOAuthScopes(), Set.of(oAuthScopes))) {
+            throw new IllegalArgumentException("Request requires ["
+                    + Arrays.stream(oAuthScopes).map(OAuthScope::name).collect(Collectors.joining(", "))
                     + "] but provided access contains ["
                     + access.getOAuthScopes().stream().map(OAuthScope::name).collect(Collectors.joining(", "))
                     + "]");

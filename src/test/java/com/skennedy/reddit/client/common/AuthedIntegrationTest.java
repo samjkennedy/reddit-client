@@ -13,11 +13,11 @@ public abstract class AuthedIntegrationTest {
     private static final String clientSecret = "_wM4AZtTKFyS6M3roRThEqzTWGCAUA";
 
     private static Access access = new Access(
-            "11894640-NWKLMBt_zlnppZzeEoJfjxOZHEtuBA",
+            "11894640-j0Hz5xqoem0EagvYXtf3m3Ti2ag7cw",
             "bearer",
             3600,
-            Arrays.asList(OAuthScope.HISTORY, OAuthScope.IDENTITY, OAuthScope.MYSUBREDDITS, OAuthScope.READ, OAuthScope.SUBMIT, OAuthScope.VOTE),
-            "11894640-L1k3p_heQ9KNGz6knqe9MNUVnyS1Yg"
+            Arrays.asList(OAuthScope.HISTORY, OAuthScope.IDENTITY, OAuthScope.MYSUBREDDITS, OAuthScope.READ, OAuthScope.SUBMIT, OAuthScope.VOTE, OAuthScope.SUBSCRIBE, OAuthScope.MYSUBREDDITS),
+            "11894640--V1RV8gTDMhYUO4A0KxZOsRWKlDmnw"
     );
 
     public RedditWebApp getClient() throws Exception {

@@ -119,3 +119,17 @@ try (Reddit reddit = new RedditWebApp(access, clientId, clientSecret)) {
     }
 }
 ```
+
+Subscribing to every subreddit that begins with "Skyrim" in one fluent pass:
+
+```
+try (Reddit reddit = new RedditWebApp(access, clientId, clientSecret)) {
+    reddit.listing()
+        .subreddits("skyrim")
+        .execute()
+        .getData()
+        .forEach(subreddit -> reddit.subreddits()
+            .r(subreddit.getName())
+            .subscribe());
+}
+```
