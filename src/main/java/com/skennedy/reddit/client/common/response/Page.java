@@ -5,6 +5,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 public class Page<T> implements Iterable<T> {
 
@@ -41,5 +42,9 @@ public class Page<T> implements Iterable<T> {
     @Override
     public Iterator<T> iterator() {
         return results.iterator();
+    }
+
+    public Stream<T> stream() {
+        return results.stream();
     }
 }

@@ -19,4 +19,9 @@ public class RequestUtils {
         }
         return CommonErrorCode.ACCESS_DENIED;
     }
+
+    public static ErrorCode parseException(Exception e) {
+        //TODO: Add more cases
+        return CommonErrorCode.UNKNOWN_ERROR;
+    }
 }

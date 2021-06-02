@@ -37,9 +37,8 @@ public class PagedResponse<D> extends Response<Page<D>> {
      * Gets the next page of data with the same parameters that got this page
      *
      * @return The next page of data
-     * @throws Exception //TODO: Make this go into the fail
      */
-    public PagedResponse<D> next() throws Exception {
+    public PagedResponse<D> next() {
         ListingRequest<? extends ListingRequest<?, D>, D> request = meta.getRequest();
         return request.after(getData().getAfter())
                 .execute();
@@ -49,9 +48,8 @@ public class PagedResponse<D> extends Response<Page<D>> {
      * Gets the previous page of data with the same parameters that got this page
      *
      * @return The previous page of data
-     * @throws Exception //TODO: Make this go into the fail
      */
-    public PagedResponse<D> previous() throws Exception {
+    public PagedResponse<D> previous() {
         ListingRequest<? extends ListingRequest<?, D>, D> request = meta.getRequest();
         return request.before(getData().getBefore())
                 .execute();

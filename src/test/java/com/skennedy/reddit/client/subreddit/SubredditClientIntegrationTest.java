@@ -2,9 +2,12 @@ package com.skennedy.reddit.client.subreddit;
 
 import com.skennedy.reddit.client.Reddit;
 import com.skennedy.reddit.client.common.AuthedIntegrationTest;
+import com.skennedy.reddit.client.common.response.Page;
+import com.skennedy.reddit.client.common.response.PagedResponse;
 import com.skennedy.reddit.client.common.response.Response;
 import com.skennedy.reddit.client.listing.model.Sticky;
 import com.skennedy.reddit.client.listing.model.Submission;
+import com.skennedy.reddit.client.listing.model.Subreddit;
 import com.skennedy.reddit.client.subreddit.model.Sidebar;
 import com.skennedy.reddit.client.subreddit.model.SubredditDetails;
 import com.skennedy.reddit.client.subreddit.model.SubredditRule;
@@ -98,6 +101,67 @@ class SubredditClientIntegrationTest extends AuthedIntegrationTest {
             Submission submission = stickyResponse.getData();
 
             assertNotNull(submission);
+        }
+    }
+
+    @Test
+    void unsubscribeSubscribe_canSubscribeToSubreddits_givenSubreddits() throws Exception {
+        try (Reddit reddit = getClient()) {
+            //Unsubscribe
+            Response<Void> unsubscribeResponse = reddit.subreddits()
+                    .r("starfield")
+                    .unsubscribe();
+
+            assertFalse(unsubscribeResponse.hasError());
+
+            //Check we are no longer subscribed to r/starfield
+            assertFalse(reddit.subreddits()
+                    .r("starfield")
+                    .about()
+                    .getData()
+                    .isUserSubscribed());
+
+            //Resubscribe
+            Response<Void> subscribeResponse = reddit.subreddits()
+                    .r("starfield")
+                    .subscribe();
+
+            assertFalse(subscribeResponse.hasError());
+
+            //Check we are now subscribed to r/starfield again
+            assertTrue(reddit.subreddits()
+                    .r("starfield")
+                    .about()
+                    .getData()
+                    .isUserSubscribed());
+        }
+    }
+
+    @Test
+    void unsubscribeSubscribeFluent_canSubscribeToSubreddits_givenSubreddits() throws Exception {
+        try (Reddit reddit = getClient()) {
+            reddit.subreddits()
+                    .r(reddit.listing()
+                            .subreddits("skyrim")
+                            .execute()
+                            .getData()
+                    ).subscribe();
+        }
+    }
+
+    @Test
+    void subscribed_canGetAllSubscribedSubreddits() throws Exception {
+        try (Reddit reddit = getClient()) {
+            PagedResponse<Subreddit> subredditPagedResponse = reddit.subreddits()
+                    .mine()
+                    .subscribed()
+                    .execute();
+            assertTrue(subredditPagedResponse.hasData());
+            assertFalse(subredditPagedResponse.hasError());
+
+            Page<Subreddit> subreddits = subredditPagedResponse.getData();
+
+            assertFalse(subreddits.isEmpty());
         }
     }
 

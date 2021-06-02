@@ -3,6 +3,7 @@ package com.skennedy.reddit.client.listing.request;
 import com.skennedy.reddit.client.authorization.model.Access;
 import com.skennedy.reddit.client.common.model.OAuthScope;
 import com.skennedy.reddit.client.common.request.ListingRequest;
+import com.skennedy.reddit.client.common.request.Request;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Page;
 import com.skennedy.reddit.client.common.response.PagedResponse;
@@ -83,46 +84,49 @@ public class SubmissionRequest extends ListingRequest<SubmissionRequest, Submiss
     }
 
     @Override
-    public PagedResponse<Submission> execute() throws Exception {
+    public PagedResponse<Submission> execute() {
         if (StringUtils.isNoneBlank(afterName, beforeName)) {
             throw new IllegalArgumentException("Only one of before or after can be set, not both");
         }
+        try {
+            List<NameValuePair> params = new ArrayList<>();
 
-        List<NameValuePair> params = new ArrayList<>();
-
-        params.add(new BasicNameValuePair("limit", String.valueOf(limit)));
-        if (StringUtils.isNotBlank(afterName)) {
-            params.add(new BasicNameValuePair("after", afterName));
-        }
-        if (StringUtils.isNotBlank(beforeName)) {
-            params.add(new BasicNameValuePair("before", beforeName));
-        }
-        if (StringUtils.isNotBlank(time)) {
-            params.add(new BasicNameValuePair("t", time));
-        }
-
-        String uri = new URIBuilder("https://oauth.reddit.com/r/" + subreddit + "/" + sort)
-                .addParameters(params)
-                .toString();
-
-        HttpGet get = new HttpGet(uri);
-        get.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
-
-        get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
-
-        try (CloseableHttpResponse response = httpClient.execute(get)) {
-            String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
-            if (response.getStatusLine().getStatusCode() != 200) {
-                return PagedResponse.error(new Fail<>(RequestUtils.parseError(response)), this);
+            params.add(new BasicNameValuePair("limit", String.valueOf(limit)));
+            if (StringUtils.isNotBlank(afterName)) {
+                params.add(new BasicNameValuePair("after", afterName));
             }
-            SubmissionListing submissionListing = gson.fromJson(content, SubmissionListing.class);
+            if (StringUtils.isNotBlank(beforeName)) {
+                params.add(new BasicNameValuePair("before", beforeName));
+            }
+            if (StringUtils.isNotBlank(time)) {
+                params.add(new BasicNameValuePair("t", time));
+            }
 
-            Page<Submission> submissions = new Page<>(submissionListing.getBefore(), submissionListing.getAfter(),
-                    submissionListing.getChildren().stream()
-                            .map(SubmissionThing::getData)
-                            .collect(Collectors.toList()));
+            String uri = new URIBuilder("https://oauth.reddit.com/r/" + subreddit + "/" + sort)
+                    .addParameters(params)
+                    .toString();
 
-            return PagedResponse.success(submissions, this);
+            HttpGet get = new HttpGet(uri);
+            get.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
+
+            get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
+
+            try (CloseableHttpResponse response = httpClient.execute(get)) {
+                String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    return PagedResponse.error(new Fail<>(RequestUtils.parseError(response)), this);
+                }
+                SubmissionListing submissionListing = gson.fromJson(content, SubmissionListing.class);
+
+                Page<Submission> submissions = new Page<>(submissionListing.getBefore(), submissionListing.getAfter(),
+                        submissionListing.getChildren().stream()
+                                .map(SubmissionThing::getData)
+                                .collect(Collectors.toList()));
+
+                return PagedResponse.success(submissions, this);
+            }
+        } catch (Exception e) {
+            return PagedResponse.error(new Fail<>(RequestUtils.parseException(e)), this);
         }
     }
 }

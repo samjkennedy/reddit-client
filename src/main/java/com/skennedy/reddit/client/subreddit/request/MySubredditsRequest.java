@@ -1,55 +1,68 @@
 package com.skennedy.reddit.client.subreddit.request;
 
 import com.skennedy.reddit.client.authorization.model.Access;
+import com.skennedy.reddit.client.common.model.OAuthScope;
+import com.skennedy.reddit.client.common.model.SubredditListing;
+import com.skennedy.reddit.client.common.model.SubredditThing;
 import com.skennedy.reddit.client.common.request.ListingRequest;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Page;
 import com.skennedy.reddit.client.common.response.PagedResponse;
 import com.skennedy.reddit.client.common.util.RequestUtils;
-import com.skennedy.reddit.client.listing.model.Submission;
-import com.skennedy.reddit.client.listing.model.SubmissionListing;
-import com.skennedy.reddit.client.listing.model.SubmissionThing;
+import com.skennedy.reddit.client.listing.model.Subreddit;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class RisingRequest extends ListingRequest<RisingRequest, Submission> {
+public class MySubredditsRequest extends ListingRequest<MySubredditsRequest, Subreddit> {
 
-    private final String subreddit;
+    private Where where;
 
-    public RisingRequest(Access access, CloseableHttpClient httpClient, String subreddit) throws IllegalAccessException {
-        super(access, httpClient);
+    public MySubredditsRequest(Access access, CloseableHttpClient httpClient) {
+        super(access, httpClient, OAuthScope.MYSUBREDDITS);
+    }
 
-        if (StringUtils.isBlank(subreddit)) {
-            throw new IllegalArgumentException("Subreddit must not be blank");
-        }
+    public MySubredditsRequest subscribed() {
+        this.where = Where.SUBSCRIBER;
 
-        this.subreddit = subreddit;
-        this.limit = 25;
+        return this;
+    }
+
+    public MySubredditsRequest contributor() {
+        this.where = Where.CONTRIBUTOR;
+
+        return this;
+    }
+
+    public MySubredditsRequest moderator() {
+        this.where = Where.MODERATOR;
+
+        return this;
+    }
+
+    public MySubredditsRequest streams() {
+        this.where = Where.STREAMS;
+
+        return this;
     }
 
     @Override
-    public PagedResponse<Submission> execute() {
-        if (StringUtils.isNoneBlank(afterName, beforeName)) {
-            throw new IllegalArgumentException("Only one of before or after can be set, not both");
+    public PagedResponse<Subreddit> execute() {
+        if (where == null) {
+            this.where = Where.SUBSCRIBER;
         }
-
         try {
-
             List<NameValuePair> params = getListingParams();
 
-            String uri = new URIBuilder("https://oauth.reddit.com/r/" + subreddit + "/rising")
+            String uri = new URIBuilder("https://oauth.reddit.com/subreddits/mine/" + where.name().toLowerCase())
                     .addParameters(params)
                     .toString();
 
@@ -63,17 +76,24 @@ public class RisingRequest extends ListingRequest<RisingRequest, Submission> {
                 if (response.getStatusLine().getStatusCode() != 200) {
                     return PagedResponse.error(new Fail<>(RequestUtils.parseError(response)), this);
                 }
-                SubmissionListing submissionListing = gson.fromJson(content, SubmissionListing.class);
+                SubredditListing subredditListing = gson.fromJson(content, SubredditListing.class);
 
-                Page<Submission> submissions = new Page<>(submissionListing.getBefore(), submissionListing.getAfter(),
-                        submissionListing.getChildren().stream()
-                                .map(SubmissionThing::getData)
+                Page<Subreddit> subreddits = new Page<>(subredditListing.getBefore(), subredditListing.getAfter(),
+                        subredditListing.getChildren().stream()
+                                .map(SubredditThing::getData)
                                 .collect(Collectors.toList()));
 
-                return PagedResponse.success(submissions, this);
+                return PagedResponse.success(subreddits, this);
             }
         } catch (Exception e) {
             return PagedResponse.error(new Fail<>(RequestUtils.parseException(e)), this);
         }
+    }
+
+    private enum Where {
+        SUBSCRIBER,
+        CONTRIBUTOR,
+        MODERATOR,
+        STREAMS
     }
 }

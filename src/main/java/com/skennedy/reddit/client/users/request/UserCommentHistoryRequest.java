@@ -9,9 +9,6 @@ import com.skennedy.reddit.client.common.util.RequestUtils;
 import com.skennedy.reddit.client.listing.model.Comment;
 import com.skennedy.reddit.client.listing.model.CommentListing;
 import com.skennedy.reddit.client.listing.model.CommentThing;
-import com.skennedy.reddit.client.listing.model.Submission;
-import com.skennedy.reddit.client.listing.model.SubmissionListing;
-import com.skennedy.reddit.client.listing.model.SubmissionThing;
 import com.skennedy.reddit.client.users.model.HistoryType;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHeaders;
@@ -34,38 +31,42 @@ public class UserCommentHistoryRequest extends UserHistoryRequest<UserCommentHis
     }
 
     @Override
-    public PagedResponse<Comment> execute() throws Exception {
+    public PagedResponse<Comment> execute() {
+        try {
 
-        List<NameValuePair> params = getListingParams();
+            List<NameValuePair> params = getListingParams();
 
-        params.add(new BasicNameValuePair("username", username));
-        params.add(new BasicNameValuePair("sort", sort.name().toLowerCase()));
-        params.add(new BasicNameValuePair("t", time.name().toLowerCase()));
-        params.add(new BasicNameValuePair("type", historyType.name().toLowerCase()));
-        params.add(new BasicNameValuePair("show", "given"));
+            params.add(new BasicNameValuePair("username", username));
+            params.add(new BasicNameValuePair("sort", sort.name().toLowerCase()));
+            params.add(new BasicNameValuePair("t", time.name().toLowerCase()));
+            params.add(new BasicNameValuePair("type", historyType.name().toLowerCase()));
+            params.add(new BasicNameValuePair("show", "given"));
 
-        String wherePath = getPath(where);
+            String wherePath = getPath(where);
 
-        HttpGet get = new HttpGet("https://oauth.reddit.com/user/" + username + wherePath);
+            HttpGet get = new HttpGet("https://oauth.reddit.com/user/" + username + wherePath);
 
-        get.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
-        get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
+            get.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
+            get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
 
-        try (CloseableHttpResponse response = httpClient.execute(get)) {
-            String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
-            if (response.getStatusLine().getStatusCode() != 200) {
-                return PagedResponse.error(new Fail<>(RequestUtils.parseError(response)), this);
+            try (CloseableHttpResponse response = httpClient.execute(get)) {
+                String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    return PagedResponse.error(new Fail<>(RequestUtils.parseError(response)), this);
+                }
+                CommentListing commentListing = gson.fromJson(content, CommentListing.class);
+
+                Page<Comment> comments = new Page<>(commentListing.getBefore(), commentListing.getAfter(),
+                        commentListing.getChildren().stream()
+                                .map(CommentThing::getData)
+                                .collect(Collectors.toList()));
+
+                return PagedResponse.success(comments, this);
+            } catch (Exception e) {
+                return PagedResponse.error(new Fail<>(CommonErrorCode.HTTP_ERROR), this);
             }
-            CommentListing commentListing = gson.fromJson(content, CommentListing.class);
-
-            Page<Comment> comments = new Page<>(commentListing.getBefore(), commentListing.getAfter(),
-                    commentListing.getChildren().stream()
-                            .map(CommentThing::getData)
-                            .collect(Collectors.toList()));
-
-            return PagedResponse.success(comments, this);
         } catch (Exception e) {
-            return PagedResponse.error(new Fail<>(CommonErrorCode.HTTP_ERROR), this);
+            return PagedResponse.error(new Fail<>(RequestUtils.parseException(e)), this);
         }
     }
 }

@@ -30,35 +30,38 @@ public class UserPostHistoryRequest extends UserHistoryRequest<UserPostHistoryRe
     }
 
     @Override
-    public PagedResponse<Submission> execute() throws Exception {
+    public PagedResponse<Submission> execute() {
+        try {
+            List<NameValuePair> params = getListingParams();
 
-        List<NameValuePair> params = getListingParams();
+            params.add(new BasicNameValuePair("username", username));
+            params.add(new BasicNameValuePair("sort", sort.name().toLowerCase()));
+            params.add(new BasicNameValuePair("t", time.name().toLowerCase()));
+            params.add(new BasicNameValuePair("type", historyType.name().toLowerCase()));
 
-        params.add(new BasicNameValuePair("username", username));
-        params.add(new BasicNameValuePair("sort", sort.name().toLowerCase()));
-        params.add(new BasicNameValuePair("t", time.name().toLowerCase()));
-        params.add(new BasicNameValuePair("type", historyType.name().toLowerCase()));
+            String wherePath = getPath(where);
 
-        String wherePath = getPath(where);
+            HttpGet get = new HttpGet("https://oauth.reddit.com/user/" + username + wherePath);
 
-        HttpGet get = new HttpGet("https://oauth.reddit.com/user/" + username + wherePath);
+            get.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
+            get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
 
-        get.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
-        get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
+            try (CloseableHttpResponse response = httpClient.execute(get)) {
+                String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    return PagedResponse.error(new Fail<>(RequestUtils.parseError(response)), this);
+                }
+                SubmissionListing submissionListing = gson.fromJson(content, SubmissionListing.class);
 
-        try (CloseableHttpResponse response = httpClient.execute(get)) {
-            String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
-            if (response.getStatusLine().getStatusCode() != 200) {
-                return PagedResponse.error(new Fail<>(RequestUtils.parseError(response)), this);
+                Page<Submission> submissions = new Page<>(submissionListing.getBefore(), submissionListing.getAfter(),
+                        submissionListing.getChildren().stream()
+                                .map(SubmissionThing::getData)
+                                .collect(Collectors.toList()));
+
+                return PagedResponse.success(submissions, this);
             }
-            SubmissionListing submissionListing = gson.fromJson(content, SubmissionListing.class);
-
-            Page<Submission> submissions = new Page<>(submissionListing.getBefore(), submissionListing.getAfter(),
-                    submissionListing.getChildren().stream()
-                            .map(SubmissionThing::getData)
-                            .collect(Collectors.toList()));
-
-            return PagedResponse.success(submissions, this);
+        } catch (Exception e) {
+            return PagedResponse.error(new Fail<>(RequestUtils.parseException(e)), this);
         }
     }
 }
