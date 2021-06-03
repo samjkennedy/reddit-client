@@ -28,7 +28,7 @@ public class RisingRequest extends ListingRequest<RisingRequest, Submission> {
 
     private final String subreddit;
 
-    public RisingRequest(Access access, CloseableHttpClient httpClient, String subreddit) throws IllegalAccessException {
+    public RisingRequest(Access access, CloseableHttpClient httpClient, String subreddit) {
         super(access, httpClient);
 
         if (StringUtils.isBlank(subreddit)) {

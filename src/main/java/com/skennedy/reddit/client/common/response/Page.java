@@ -47,4 +47,8 @@ public class Page<T> implements Iterable<T> {
     public Stream<T> stream() {
         return results.stream();
     }
+
+    public Collection<T> getResults() {
+        return results;
+    }
 }

@@ -11,9 +11,13 @@ import com.skennedy.reddit.client.listing.model.Subreddit;
 import com.skennedy.reddit.client.subreddit.model.Sidebar;
 import com.skennedy.reddit.client.subreddit.model.SubredditDetails;
 import com.skennedy.reddit.client.subreddit.model.SubredditRule;
+import org.apache.commons.collections4.IteratorUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -138,14 +142,38 @@ class SubredditClientIntegrationTest extends AuthedIntegrationTest {
     }
 
     @Test
-    void unsubscribeSubscribeFluent_canSubscribeToSubreddits_givenSubreddits() throws Exception {
+    @Disabled("Let's not run this")
+    void subscribeFluent_canSubscribeToSubreddits_givenSubreddits() throws Exception {
         try (Reddit reddit = getClient()) {
-            reddit.subreddits()
-                    .r(reddit.listing()
+            Response<Void> subscribeResponse = reddit.subreddits()
+                    .subreddits(reddit.listing()
                             .subreddits("skyrim")
                             .execute()
                             .getData()
                     ).subscribe();
+
+            assertFalse(subscribeResponse.hasError());
+        }
+    }
+
+    @Test
+    @Disabled("Let's not run this")
+    void unsubscribeFluent_canUnsubscribeFromAllSubreddits_givenSubreddits() throws Exception {
+        try (Reddit reddit = getClient()) {
+
+            PagedResponse<Subreddit> subredditPagedResponse = reddit.subreddits()
+                    .mine()
+                    .limit(10)
+                    .subscribed()
+                    .execute();
+
+            while (subredditPagedResponse.hasNext()) {
+                Collection<Subreddit> subreddits = subredditPagedResponse.getData().getResults();
+                reddit.subreddits()
+                        .subreddits(subreddits)
+                        .unsubscribe();
+                subredditPagedResponse = subredditPagedResponse.next();
+            }
         }
     }
 

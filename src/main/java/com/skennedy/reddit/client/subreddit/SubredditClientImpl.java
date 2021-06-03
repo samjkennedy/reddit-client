@@ -9,8 +9,10 @@ import com.skennedy.reddit.client.common.model.LanguageCode;
 import com.skennedy.reddit.client.listing.model.Subreddit;
 import com.skennedy.reddit.client.subreddit.request.MySubredditsRequest;
 import com.skennedy.reddit.client.subreddit.request.SubredditRequest;
+import com.skennedy.reddit.client.subreddit.request.SubredditsRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -30,30 +32,41 @@ public class SubredditClientImpl implements SubredditClient {
                 .create();
     }
 
-    /**
-     * Begins a flow for accessing one or more subreddits. Some functions can only be performed on one subreddit, e.g. about()
-     * @param subreddits at least one subreddit
-     * @return a SubredditRequest instance
-     */
     @Override
-    public SubredditRequest r(String... subreddits) {
-        return new SubredditRequest(access, httpClient, subreddits);
+    public SubredditRequest r(String subreddit) {
+        return new SubredditRequest(access, httpClient, subreddit);
     }
 
-    /**
-     * Begins a flow for accessing one or more subreddits. Some functions can only be performed on one subreddit, e.g. about()
-     * @param subreddits at least one subreddit
-     * @return a SubredditRequest instance
-     */
     @Override
-    public SubredditRequest r(Collection<Subreddit> subreddits) {
-        return new SubredditRequest(access, httpClient, subreddits.stream().map(Subreddit::getDisplayName).collect(Collectors.toList()));
+    public SubredditsRequest r(String subreddit, String... subreddits) {
+        return new SubredditsRequest(access, httpClient, subreddit, subreddits);
     }
 
-    /**
-     * Begins a flow for accessing the authorised user's subscribed subreddits
-     * @return a MySubredditsRequest instance
-     */
+    @Override
+    public SubredditRequest subreddit(Subreddit subreddit) {
+        return new SubredditRequest(access, httpClient, subreddit);
+    }
+
+    @Override
+    public SubredditsRequest subreddits(Subreddit subreddit, Subreddit... subreddits) {
+        return new SubredditsRequest(access, httpClient, subreddit.getDisplayName(),
+                Arrays.stream(subreddits)
+                        .map(Subreddit::getDisplayName)
+                        .toArray(String[]::new));
+    }
+
+    @Override
+    public SubredditsRequest r(Collection<String> subreddits) {
+        return new SubredditsRequest(access, httpClient, subreddits);
+    }
+
+    @Override
+    public SubredditsRequest subreddits(Collection<Subreddit> subreddits) {
+        return new SubredditsRequest(access, httpClient, subreddits.stream()
+                .map(Subreddit::getDisplayName)
+                .collect(Collectors.toList()));
+    }
+
     @Override
     public MySubredditsRequest mine() {
         return new MySubredditsRequest(access, httpClient);
