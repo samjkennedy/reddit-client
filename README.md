@@ -120,16 +120,21 @@ try (Reddit reddit = new RedditWebApp(access, clientId, clientSecret)) {
 }
 ```
 
-Subscribing to every subreddit that begins with "Skyrim" in one fluent pass:
+Unsubscribing a user from every sub they're subscribed to (if for example they're transferring their account):
 
 ```
 try (Reddit reddit = new RedditWebApp(access, clientId, clientSecret)) {
-    reddit.listing()
-        .subreddits("skyrim")
-        .execute()
-        .getData()
-        .forEach(subreddit -> reddit.subreddits()
-            .r(subreddit.getName())
-            .subscribe());
+    PagedResponse<Subreddit> subredditPagedResponse = reddit.subreddits()
+        .mine()
+        .subscribed()
+        .execute();
+    
+    while (subredditPagedResponse.hasData()) {
+        Collection<Subreddit> subreddits = subredditPagedResponse.getData().getResults();
+        reddit.subreddits()
+            .subreddits(subreddits)
+            .unsubscribe();
+        subredditPagedResponse = subredditPagedResponse.next();
+    }
 }
 ```

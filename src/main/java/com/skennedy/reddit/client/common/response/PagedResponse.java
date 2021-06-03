@@ -1,6 +1,7 @@
 package com.skennedy.reddit.client.common.response;
 
 import com.skennedy.reddit.client.common.request.ListingRequest;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Represents a page of data with the ability to get the next or previous pages with the same parameters
@@ -31,6 +32,14 @@ public class PagedResponse<D> extends Response<Page<D>> {
 
         meta = new Meta<>();
         meta.setRequest(request);
+    }
+
+    public boolean hasNext() {
+        return StringUtils.isNotBlank(getData().getAfter());
+    }
+
+    public boolean hasPrevious() {
+        return StringUtils.isNotBlank(getData().getBefore());
     }
 
     /**

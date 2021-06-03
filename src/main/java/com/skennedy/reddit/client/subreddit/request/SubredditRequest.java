@@ -4,9 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.skennedy.reddit.client.authorization.model.Access;
-import com.skennedy.reddit.client.common.error.CommonErrorCode;
-import com.skennedy.reddit.client.common.model.OAuthScope;
-import com.skennedy.reddit.client.common.request.Request;
 import com.skennedy.reddit.client.common.response.Fail;
 import com.skennedy.reddit.client.common.response.Response;
 import com.skennedy.reddit.client.common.util.RequestUtils;
@@ -14,53 +11,42 @@ import com.skennedy.reddit.client.listing.error.SearchErrorCode;
 import com.skennedy.reddit.client.listing.model.Sticky;
 import com.skennedy.reddit.client.listing.model.Submission;
 import com.skennedy.reddit.client.listing.model.SubmissionListing;
+import com.skennedy.reddit.client.listing.model.Subreddit;
 import com.skennedy.reddit.client.subreddit.model.Sidebar;
 import com.skennedy.reddit.client.subreddit.model.SubredditDetails;
 import com.skennedy.reddit.client.subreddit.model.SubredditDetailsThing;
 import com.skennedy.reddit.client.subreddit.model.SubredditRule;
 import com.skennedy.reddit.client.subreddit.model.SubredditRules;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class SubredditRequest extends Request {
+/**
+ * Represents the actions that can be done on only one subreddit, any actions that can take multiple subreddits must go in {@link SubredditsRequest}
+ */
+public class SubredditRequest extends SubredditsRequest {
 
-    private List<String> subreddits;
+    private final String subreddit;
 
-    public SubredditRequest(Access access, CloseableHttpClient httpClient, String... subreddits) {
-        super(access, httpClient, OAuthScope.READ);
-        if (ArrayUtils.isEmpty(subreddits)) {
-            throw new IllegalArgumentException("At least one subreddit must be provided");
-        }
+    public SubredditRequest(Access access, CloseableHttpClient httpClient, Subreddit subreddit) {
+        super(access, httpClient, subreddit.getDisplayName());
 
-        this.subreddits = Arrays.asList(subreddits);
+        this.subreddit = subreddit.getDisplayName();
     }
 
-    public SubredditRequest(Access access, CloseableHttpClient httpClient, Collection<String> subreddits) {
-        super(access, httpClient, OAuthScope.READ);
-        if (CollectionUtils.isEmpty(subreddits)) {
-            throw new IllegalArgumentException("At least one subreddit must be provided");
-        }
+    public SubredditRequest(Access access, CloseableHttpClient httpClient, String subreddit) {
+        super(access, httpClient, subreddit);
 
-        this.subreddits = new ArrayList<>(subreddits);
+        this.subreddit = subreddit;
     }
 
     /**
@@ -69,13 +55,9 @@ public class SubredditRequest extends Request {
      */
     public Response<SubredditDetails> about() {
 
-        if (subreddits.size() != 1) {
-            throw new IllegalArgumentException("/about can only be called on one subreddit");
-        }
-
         try {
 
-            String uri = "https://oauth.reddit.com/r/" + subreddits.get(0) + "/about";
+            String uri = "https://oauth.reddit.com/r/" + subreddit + "/about";
 
             HttpGet get = new HttpGet(uri);
             get.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
@@ -103,12 +85,8 @@ public class SubredditRequest extends Request {
      */
     public Response<List<SubredditRule>> rules() {
 
-        if (subreddits.size() != 1) {
-            throw new IllegalArgumentException("/rules can only be called on one subreddit");
-        }
-
         try {
-            String uri = "https://oauth.reddit.com/r/" + subreddits.get(0) + "/about/rules";
+            String uri = "https://oauth.reddit.com/r/" + subreddit + "/about/rules";
 
             HttpGet get = new HttpGet(uri);
             get.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
@@ -132,12 +110,8 @@ public class SubredditRequest extends Request {
     
     public Response<Sidebar> sidebar() {
 
-        if (subreddits.size() != 1) {
-            throw new IllegalArgumentException("/sidebar can only be called on one subreddit");
-        }
-
         try {
-            HttpGet get = new HttpGet("https://oauth.reddit.com/r/" + subreddits.get(0) + "/about/sidebar");
+            HttpGet get = new HttpGet("https://oauth.reddit.com/r/" + subreddit + "/about/sidebar");
             get.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
             get.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
 
@@ -168,14 +142,10 @@ public class SubredditRequest extends Request {
      */
     public Response<Submission> sticky(Sticky sticky) {
 
-        if (subreddits.size() != 1) {
-            throw new IllegalArgumentException("/sticky can only be called on one subreddit");
-        }
-
         try {
             NameValuePair stickyParam = new BasicNameValuePair("num", String.valueOf(getIdx(sticky)));
 
-            String uri = new URIBuilder("https://oauth.reddit.com/r/" + subreddits.get(0) + "/about/sticky")
+            String uri = new URIBuilder("https://oauth.reddit.com/r/" + subreddit + "/about/sticky")
                     .addParameters(Collections.singletonList(stickyParam))
                     .toString();
 
@@ -205,55 +175,6 @@ public class SubredditRequest extends Request {
         }
     }
 
-    /**
-     * Subscribes to the subreddits
-     * @return a Void response
-     */
-    public Response<Void> subscribe() {
-        return subscriptionAction(SubscriptionType.SUBSCRIBE);
-    }
-
-    /**
-     * Unsubscribes from the subreddits
-     * @return a Void response
-     */
-    public Response<Void> unsubscribe() {
-        return subscriptionAction(SubscriptionType.UNSUBSCRIBE);
-    }
-
-    private Response<Void> subscriptionAction(SubscriptionType type) {
-
-        if (!access.getOAuthScopes().contains(OAuthScope.SUBSCRIBE)) {
-            return Response.error(new Fail<>(CommonErrorCode.ACCESS_DENIED, "Subscribe scope is required for this endpoint"));
-        }
-
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("sr_name", String.join(",", subreddits)));
-        params.add(new BasicNameValuePair("action", type == SubscriptionType.SUBSCRIBE ? "sub" : "unsub"));
-
-        HttpPost post = new HttpPost("https://oauth.reddit.com/api/subscribe");
-
-        post.setHeader(HttpHeaders.USER_AGENT, RequestUtils.USER_AGENT);
-        post.setHeader(HttpHeaders.AUTHORIZATION, "bearer " + access.getAccessToken());
-
-        try {
-            post.setEntity(new UrlEncodedFormEntity(params));
-        } catch (UnsupportedEncodingException e) {
-            return Response.error(new Fail<>(CommonErrorCode.MALFORMED_URL));
-        }
-
-        try (CloseableHttpResponse response = httpClient.execute(post)) {
-            String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
-            if (response.getStatusLine().getStatusCode() != 200) {
-                return Response.error(new Fail<>(RequestUtils.parseError(response)));
-            }
-
-            return Response.success(null);
-        } catch (IOException e) {
-            return Response.error(new Fail<>(CommonErrorCode.HTTP_ERROR));
-        }
-    }
-
     private int getIdx(Sticky sticky) {
         switch (sticky) {
             case FIRST:
@@ -263,11 +184,6 @@ public class SubredditRequest extends Request {
             default:
                 throw new IllegalStateException("Unexpected value: " + sticky);
         }
-    }
-
-    private enum SubscriptionType {
-        SUBSCRIBE,
-        UNSUBSCRIBE
     }
 
 }
